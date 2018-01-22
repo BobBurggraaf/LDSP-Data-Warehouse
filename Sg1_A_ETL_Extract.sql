@@ -3451,6 +3451,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Plus_MatchExpected BIT
 			, New_Batch UNIQUEIDENTIFIER
 			, Plus_Description NVARCHAR(4000)
+			, Lds_RecurringGiftRule UNIQUEIDENTIFIER
+			, Lds_RecurringGiftGroup UNIQUEIDENTIFIER
 			' -- Create_Fields
 		, 'New_ConstituentDonor
 			, New_OrganizationDonor
@@ -3496,6 +3498,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Plus_MatchExpected
 			, New_Batch
 			, Plus_Description
+			, Lds_RecurringGiftRule
+			, Lds_RecurringGiftGroup
 			' -- Insert_Fields
 		, 'New_GiftBase A
 				LEFT JOIN _MDT_Conversion_Dim B ON YEAR(A.New_AccountingDate) = B.Date_Year
@@ -3550,6 +3554,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Plus_MatchExpected
 			, New_Batch
 			, CONVERT(NVARCHAR(4000),Plus_Description) AS Plus_Description
+			, Lds_RecurringGiftRule
+			, Lds_RecurringGiftGroup
 			' -- Attribute_1
 		, ' ' -- Attribute_2
 		, ' ' -- Attribute_3
@@ -6564,6 +6570,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Plus_Amount MONEY
 			, Plus_Group UNIQUEIDENTIFIER
 			, Plus_Type INT
+			, Plus_Organization UNIQUEIDENTIFIER
+			, CreatedOn DATETIME
 			' -- Create_Fields
 		, 'Plus_RecurringGiftRulesId
 			, Plus_Constituent
@@ -6578,6 +6586,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Plus_Amount
 			, Plus_Group
 			, Plus_Type
+			, Plus_Organization
+			, CreatedOn
 			' -- Insert_Fields
 		, 'Plus_RecurringGiftRulesBase A
 				LEFT JOIN _MDT_Conversion_Dim B ON YEAR(A.Plus_PaymentStart) = B.Date_Year
@@ -6599,6 +6609,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Plus_Amount
 			, Plus_Group
 			, Plus_Type
+			, Plus_Organization
+			, CreatedOn
 			' -- Attribute_1
 		, ' ' -- Attribute_2
 		, ' ' -- Attribute_3

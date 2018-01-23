@@ -5448,6 +5448,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 					, Plus_MatchExpected BIT
 					, New_Batch UNIQUEIDENTIFIER
 					, Plus_Description NVARCHAR(4000)
+					, Lds_RecurringGiftRule UNIQUEIDENTIFIER
+					, Lds_RecurringGiftGroup UNIQUEIDENTIFIER
 					, I5_Not_Deleted__Rule_1 INT NOT NULL DEFAULT 1
 					, Donor_Attached__Rule_2 INT NOT NULL DEFAULT 1
 					, Constituent_When_Two_Donors__Rule_3 INT NOT NULL DEFAULT 0
@@ -5501,6 +5503,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 					, Plus_MatchExpected
 					, New_Batch
 					, Plus_Description
+					, Lds_RecurringGiftRule
+					, Lds_RecurringGiftGroup
 				)
 
 				SELECT A.New_ConstituentDonor
@@ -5548,6 +5552,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 					, A.Plus_MatchExpected
 					, A.New_Batch
 					, A.Plus_Description
+					, A.Lds_RecurringGiftRule
+					, A.Lds_RecurringGiftGroup
 					FROM Ext_Gift A
 						LEFT JOIN Ext_Pledge B ON A.New_AssociatedPledge = B.New_PledgeId
 						LEFT JOIN Ext_Opportunity C ON B.New_Opportunity = C.OpportunityId
@@ -17775,16 +17781,16 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Update _Donation_Dim with Recurring Gifts'', @Alpha_Step_Number = ''128G'', @Alpha_Step_Name = ''Update Recurring Gifts - Load - Begin'', @Alpha_Result = 1;
 					UPDATE _Donation_Dim
 						SET 
-							_Donation_Dim.Recurring_Gift = C.Recurring_Gift,
+							--_Donation_Dim.Recurring_Gift = C.Recurring_Gift,
 							_Donation_Dim.Recurring_Gift_Expectancy = C.Recurring_Gift_Expectancy
 						FROM
 							(SELECT B.Donation_Key
-								, B.Recurring_Gift
+								--, B.Recurring_Gift
 								, B.Recurring_Gift_Expectancy
 								FROM _Donation_Dim A
 									LEFT JOIN 
 										(SELECT Plus_ParentGift AS Donation_Key
-											, CASE WHEN Plus_ParentGift IS NOT NULL THEN ''Y'' ELSE ''N'' END AS Recurring_Gift
+											--, CASE WHEN Plus_ParentGift IS NOT NULL THEN ''Y'' ELSE ''N'' END AS Recurring_Gift
 											, CASE WHEN Plus_RecurringGiftRules IS NOT NULL THEN ''Y'' ELSE ''N'' END AS Recurring_Gift_Expectancy
 											FROM 
 												(SELECT Plus_ParentGift
@@ -17797,6 +17803,20 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 							) C
 						WHERE 1 = 1
 							AND _Donation_Dim.Donation_Key = C.Donation_Key
+					;
+					MERGE INTO _Donation_Dim T
+						USING (
+								SELECT New_GiftId AS Donation_Key
+									, ''Y'' AS Recurring_Gift
+									FROM Ext_Gift
+									WHERE 1 = 1
+										AND (Lds_RecurringGiftRule IS NOT NULL
+												OR Lds_RecurringGiftGroup IS NOT NULL)								
+								) S ON T.Donation_Key = S.Donation_Key
+						WHEN MATCHED THEN 
+							UPDATE
+								SET T.Recurring_Gift = S.Recurring_Gift
+					;
 				SELECT @TABLE_CNT112A = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM _Donation_Dim WHERE Recurring_Gift = ''Y'')
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Update _Donation_Dim with Recurring Gifts'', @Alpha_Step_Number = ''128G'', @Alpha_Step_Name = ''Update Recurring Gifts - Count'', @Alpha_Count = @TABLE_CNT112A, @Alpha_Result = 1;
 				EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''Update _Donation_Dim with Recurring Gifts'', @Alpha_Step_Number = ''128G'', @Alpha_Step_Name = ''Update Recurring Gifts - Load - End'', @Alpha_Result = 1;                                                   

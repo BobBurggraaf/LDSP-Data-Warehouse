@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1373387
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1368700
    
 ******************************************************************************/
 
@@ -14141,7 +14141,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((113 - 1373500)/-1)
+			SET @Barsoom_Base = ((100 - 1368800)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -22374,12 +22374,13 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT A.Donor_Key
-								, B.Donor_Retention_Type_Code AS Donor_Retention_Type_Code_Byu
-								FROM _Retention_Byu_Fact A
-									LEFT JOIN _Donor_Retention_Type_Dim B ON A.Donor_Retention_Type_Key = B.Donor_Retention_Type_Key
+							SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+								, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu
+								FROM Ext_Donor_Score A
+									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
 								WHERE 1 = 1
-									AND A.Retention_Year = YEAR(GETDATE())
+									AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+									AND B.New_Inst = ''BYU''
 							) S ON T.Donor_Key = S.Donor_Key
 						WHEN MATCHED THEN 
 							UPDATE
@@ -22773,12 +22774,13 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT A.Donor_Key
-								, B.Donor_Retention_Type_Code AS Donor_Retention_Type_Code_Byui
-								FROM _Retention_Byui_Fact A
-									LEFT JOIN _Donor_Retention_Type_Dim B ON A.Donor_Retention_Type_Key = B.Donor_Retention_Type_Key
+							SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+								, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui
+								FROM Ext_Donor_Score A
+									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
 								WHERE 1 = 1
-									AND A.Retention_Year = YEAR(GETDATE())
+									AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+									AND B.New_Inst = ''BYUI''
 							) S ON T.Donor_Key = S.Donor_Key
 						WHEN MATCHED THEN 
 							UPDATE
@@ -23172,12 +23174,13 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT A.Donor_Key
-								, B.Donor_Retention_Type_Code AS Donor_Retention_Type_Code_Byuh
-								FROM _Retention_Byuh_Fact A
-									LEFT JOIN _Donor_Retention_Type_Dim B ON A.Donor_Retention_Type_Key = B.Donor_Retention_Type_Key
+							SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+								, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh
+								FROM Ext_Donor_Score A
+									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
 								WHERE 1 = 1
-									AND A.Retention_Year = YEAR(GETDATE())
+									AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+									AND B.New_Inst = ''BYUH''
 							) S ON T.Donor_Key = S.Donor_Key
 						WHEN MATCHED THEN 
 							UPDATE
@@ -23571,12 +23574,13 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT A.Donor_Key
-								, B.Donor_Retention_Type_Code AS Donor_Retention_Type_Code_Ldsbc
-								FROM _Retention_Ldsbc_Fact A
-									LEFT JOIN _Donor_Retention_Type_Dim B ON A.Donor_Retention_Type_Key = B.Donor_Retention_Type_Key
+							SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+								, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc
+								FROM Ext_Donor_Score A
+									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
 								WHERE 1 = 1
-									AND A.Retention_Year = YEAR(GETDATE())
+									AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+									AND B.New_Inst = ''LDSBC''
 							) S ON T.Donor_Key = S.Donor_Key
 						WHEN MATCHED THEN 
 							UPDATE
@@ -30243,23 +30247,13 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			;
 			MERGE INTO _Donor_Dim T
 				USING (	
-					SELECT Donor_Key
-						, Donor_Type_Code_Ldsp
-						FROM
-							(SELECT Donor_Key
-								, Donor_Type_Code_Ldsp
-								, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Type_Code_Ldsp) AS RowNumber
-								FROM
-									(SELECT DISTINCT A.ContactId AS Donor_Key
-										, RIGHT(A.Psa_Code,2) AS Donor_Type_Code_Ldsp
-										FROM Ext_Psa A
-										WHERE 1 = 1
-											AND SUBSTRING(A.Psa_Code,1,3) = ''DTA''
-											AND YEAR(A.Psa_Eff_From) = YEAR(GETDATE())
-									) A
-							) A
-						WHERE 1 = 1
-							AND RowNumber = 1
+						SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+							, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Type_Code_Ldsp
+							FROM Ext_Donor_Score A
+								INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+							WHERE 1 = 1
+								AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+								AND B.New_Inst = ''LDSP''
 					) S ON T.Donor_Key = S.Donor_Key
 				WHEN MATCHED THEN 
 					UPDATE

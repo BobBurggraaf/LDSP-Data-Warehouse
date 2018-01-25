@@ -3078,6 +3078,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Is_Qualified NVARCHAR(1)
 			, Donor_Qualified_On DATE 
 			, Donor_Qualified_By NVARCHAR(200)
+			, Donor_First_Recurring_Rule_Date_Byu DATE
+			, Donor_First_Recurring_Rule_Date_Byui DATE
+			, Donor_First_Recurring_Rule_Date_Byuh DATE
+			, Donor_First_Recurring_Rule_Date_Ldsbc DATE
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3377,6 +3381,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Is_Qualified
 			, Donor_Qualified_On 
 			, Donor_Qualified_By
+			, Donor_First_Recurring_Rule_Date_Byu
+			, Donor_First_Recurring_Rule_Date_Byui
+			, Donor_First_Recurring_Rule_Date_Byuh
+			, Donor_First_Recurring_Rule_Date_Ldsbc
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

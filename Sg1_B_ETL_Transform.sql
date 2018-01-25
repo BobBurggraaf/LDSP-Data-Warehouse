@@ -13,7 +13,7 @@
    1.4        10/5/2016      Fams           5. Addition of the _Student_Dim, Donor columns
    1.5		  10/14/2016	 Fams			6. Addition of the Date_Dim and 16 keys in different tables (Change to production database)
    2.0		  11/09/2016	 Fams			7. Script QA
-   2.1		  12/13/2016	 Fams			8. Phone_Active_Yn changed from StateCode to StatusCode and fromat Spouse_Birth_Date to DATE
+   2.1		  12/13/2016	 Fams			8. Phone_Active_Yn changed from StateCode to StatusCode and format Spouse_Birth_Date to DATE
    2.2		  12/28/2016     Fams			9. Donation_Dim QA, Added Hierarchy columns to _Drop_Include_Dim. Allow Fund_Key to join to credited values.
 												Address/Email/Phone - Only active records will be placed in the dimensions.
    2.3		  1/4/2017		 Fams			10. Change New_Endowment and Plus_HoursCredits from source data.
@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1368700
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1374011
    
 ******************************************************************************/
 
@@ -13188,6 +13188,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Is_Qualified NVARCHAR(1)
 			, Donor_Qualified_On DATE 
 			, Donor_Qualified_By NVARCHAR(200)
+			, Donor_First_Recurring_Rule_Date_Byu DATE
+			, Donor_First_Recurring_Rule_Date_Byui DATE
+			, Donor_First_Recurring_Rule_Date_Byuh DATE
+			, Donor_First_Recurring_Rule_Date_Ldsbc DATE
 			'
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -13487,6 +13491,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Is_Qualified
 			, Donor_Qualified_On 
 			, Donor_Qualified_By
+			, Donor_First_Recurring_Rule_Date_Byu
+			, Donor_First_Recurring_Rule_Date_Byui
+			, Donor_First_Recurring_Rule_Date_Byuh
+			, Donor_First_Recurring_Rule_Date_Ldsbc
 			'
 		, ' '
 		, ' '
@@ -14147,7 +14155,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((100 - 1368800)/-1)
+			SET @Barsoom_Base = ((189 - 1374200)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -14457,6 +14465,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 									, Donor_Is_Qualified
 									, Donor_Qualified_On 
 									, Donor_Qualified_By
+									, Donor_First_Recurring_Rule_Date_Byu
+									, Donor_First_Recurring_Rule_Date_Byui
+									, Donor_First_Recurring_Rule_Date_Byuh
+									, Donor_First_Recurring_Rule_Date_Ldsbc
 									)
 									SELECT DISTINCT A.Donor_Key
 										, COALESCE(A.Activity_Group_Key,0) AS Activity_Group_Key
@@ -14643,10 +14655,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, 0 AS Donor_Largest_Gift_Amt_Byui
 										, 0 AS Donor_Largest_Gift_Amt_Byuh
 										, 0 AS Donor_Largest_Gift_Amt_Ldsbc
-										, NULL AS Donor_Retention_Type_Code_Byu
-										, NULL AS Donor_Retention_Type_Code_Byui
-										, NULL AS Donor_Retention_Type_Code_Byuh
-										, NULL AS Donor_Retention_Type_Code_Ldsbc
+										, ''D1'' AS Donor_Retention_Type_Code_Byu  -- See TFS # 438115 1/24/2018
+										, ''D1'' AS Donor_Retention_Type_Code_Byui  -- See TFS # 438115 1/24/2018
+										, ''D1'' AS Donor_Retention_Type_Code_Byuh  -- See TFS # 438115 1/24/2018
+										, ''D1'' AS Donor_Retention_Type_Code_Ldsbc  -- See TFS # 438115 1/24/2018
 										, NULL AS Donor_Total_Giving_To_Byu_Current_Year_Amt
 										, NULL AS Donor_Total_Giving_To_Byu_Current_Year_Minus_1_Amt
 										, NULL AS Donor_Total_Giving_To_Byu_Current_Year_Minus_2_Amt
@@ -14732,7 +14744,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_Most_Recent_Gift_To_Ldsbc_Amt
 										, NULL AS Donor_Most_Recent_Gift_To_Church_Amt
 										, NULL AS Donor_Last_F2F_Visit_Date
-										, NULL AS Donor_Type_Code_Ldsp
+										, ''D1'' AS Donor_Type_Code_Ldsp  -- See TFS # 438115 1/24/2018
 										, NULL AS Donor_Largest_Gift_Amt_Church
 										, NULL AS Donor_Largest_Gift_Date_Ldsp
 										, NULL AS Donor_Largest_Gift_Date_Byu
@@ -14756,6 +14768,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_Is_Qualified
 										, NULL AS Donor_Qualified_On 
 										, NULL AS Donor_Qualified_By
+										, NULL AS Donor_First_Recurring_Rule_Date_Byu
+										, NULL AS Donor_First_Recurring_Rule_Date_Byui
+										, NULL AS Donor_First_Recurring_Rule_Date_Byuh
+										, NULL AS Donor_First_Recurring_Rule_Date_Ldsbc
 										FROM OneAccord_Warehouse.dbo._Donor_Pre_Dim A
 											INNER JOIN OneAccord_Warehouse.dbo._Numbered_ContactIds NUM ON A.Donor_Key = NUM.ContactId 
 											LEFT JOIN OneAccord_Warehouse.dbo._Donor_Gender_ B ON A.GenderCode = B.Column_Value
@@ -17808,7 +17824,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 						USING (
 								SELECT New_GiftId AS Donation_Key
 									, ''Y'' AS Recurring_Gift
-									FROM Ext_Gift
+									FROM _Gift_
 									WHERE 1 = 1
 										AND (Lds_RecurringGiftRule IS NOT NULL
 												OR Lds_RecurringGiftGroup IS NOT NULL)								
@@ -32439,6 +32455,70 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				WHEN MATCHED THEN 
 					UPDATE
 						SET T.Donor_Qualified_By = S.Donor_Qualified_By
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization)) AS Donor_Key 
+							, MIN(CONVERT(DATE,A.CreatedOn,101)) AS Donor_First_Recurring_Rule_Date_Byu
+							FROM Ext_Recurring_Gift_Rules A
+								INNER JOIN Ext_Fund_Account B ON A.Plus_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND C.New_Inst = ''BYU''
+								AND COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization)) IS NOT NULL
+							GROUP BY COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization))
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Recurring_Rule_Date_Byu = S.Donor_First_Recurring_Rule_Date_Byu
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization)) AS Donor_Key 
+							, MIN(CONVERT(DATE,A.CreatedOn,101)) AS Donor_First_Recurring_Rule_Date_Byui
+							FROM Ext_Recurring_Gift_Rules A
+								INNER JOIN Ext_Fund_Account B ON A.Plus_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND C.New_Inst = ''BYUI''
+								AND COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization)) IS NOT NULL
+							GROUP BY COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization))
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Recurring_Rule_Date_Byui = S.Donor_First_Recurring_Rule_Date_Byui
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization)) AS Donor_Key 
+							, MIN(CONVERT(DATE,A.CreatedOn,101)) AS Donor_First_Recurring_Rule_Date_Byuh
+							FROM Ext_Recurring_Gift_Rules A
+								INNER JOIN Ext_Fund_Account B ON A.Plus_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND C.New_Inst = ''BYUH''
+								AND COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization)) IS NOT NULL
+							GROUP BY COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization))
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Recurring_Rule_Date_Byuh = S.Donor_First_Recurring_Rule_Date_Byuh
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization)) AS Donor_Key 
+							, MIN(CONVERT(DATE,A.CreatedOn,101)) AS Donor_First_Recurring_Rule_Date_Ldsbc
+							FROM Ext_Recurring_Gift_Rules A
+								INNER JOIN Ext_Fund_Account B ON A.Plus_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND C.New_Inst = ''LDSBC''
+								AND COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization)) IS NOT NULL
+							GROUP BY COALESCE(CONVERT(NVARCHAR(100),A.Plus_Constituent),CONVERT(NVARCHAR(100),A.Plus_Organization))
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Recurring_Rule_Date_Ldsbc = S.Donor_First_Recurring_Rule_Date_Ldsbc
 						;
 		END TRY 
 		BEGIN CATCH

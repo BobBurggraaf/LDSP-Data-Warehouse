@@ -688,7 +688,7 @@ CREATE TABLE #Prod_Summary (
 	, @subject = 'LDSP Trans/Load Complete'  -->>>>>> EMAIL SUBJECT <<<<<<<--
 	, @body = @body
 	, @body_format = 'HTML'
-	, @query = 'SELECT TOP 2975 * FROM OneAccord_Warehouse.dbo.Alpha_Table_2'  -- MAXES OUT MEMORY AND WON'T SEND EMAIL
+	, @query = 'SELECT TOP 2500 * FROM OneAccord_Warehouse.dbo.Alpha_Table_2'  -- MAXES OUT MEMORY AND WON'T SEND EMAIL
 	, @query_result_header=1
 	, @query_no_truncate=1
 	, @attach_query_result_as_file=1

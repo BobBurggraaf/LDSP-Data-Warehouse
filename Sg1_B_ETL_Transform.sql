@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1374011
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1373851
    
 ******************************************************************************/
 
@@ -14155,7 +14155,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((189 - 1374200)/-1)
+			SET @Barsoom_Base = ((149 - 1374000)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -22410,8 +22410,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-								, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu
+							SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+								, ''D1'' AS Donor_Retention_Type_Code_Byu
 								FROM Ext_Donor_Score A
 									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
 								WHERE 1 = 1
@@ -22810,8 +22810,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-								, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui
+							SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+								, ''D1'' AS Donor_Retention_Type_Code_Byui
 								FROM Ext_Donor_Score A
 									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
 								WHERE 1 = 1
@@ -23210,8 +23210,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-								, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh
+							SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+								, ''D1'' AS Donor_Retention_Type_Code_Byuh
 								FROM Ext_Donor_Score A
 									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
 								WHERE 1 = 1
@@ -23610,8 +23610,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-								, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc
+							SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+								, ''D1'' AS Donor_Retention_Type_Code_Ldsbc
 								FROM Ext_Donor_Score A
 									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
 								WHERE 1 = 1
@@ -30283,8 +30283,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			;
 			MERGE INTO _Donor_Dim T
 				USING (	
-						SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-							, CONVERT(NVARCHAR(2),A.Plus_I5LegacyDonorType) AS Donor_Type_Code_Ldsp
+						SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+							, ''D1'' AS Donor_Type_Code_Ldsp
 							FROM Ext_Donor_Score A
 								INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
 							WHERE 1 = 1

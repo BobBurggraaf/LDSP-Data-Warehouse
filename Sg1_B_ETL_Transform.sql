@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1373851
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1390044
    
 ******************************************************************************/
 
@@ -13192,6 +13192,14 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Recurring_Rule_Date_Byui DATE
 			, Donor_First_Recurring_Rule_Date_Byuh DATE
 			, Donor_First_Recurring_Rule_Date_Ldsbc DATE
+			, Donor_Recurring_Total_Last_Month_Byu MONEY
+			, Donor_Recurring_Total_Last_Month_Byui MONEY
+			, Donor_Recurring_Total_Last_Month_Byuh MONEY
+			, Donor_Recurring_Total_Last_Month_Ldsbc MONEY
+			, Donor_Recurring_Total_Month_Before_Last_Byu MONEY
+			, Donor_Recurring_Total_Month_Before_Last_Byui MONEY
+			, Donor_Recurring_Total_Month_Before_Last_Byuh MONEY
+			, Donor_Recurring_Total_Month_Before_Last_Ldsbc MONEY
 			'
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -13495,6 +13503,14 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Recurring_Rule_Date_Byui
 			, Donor_First_Recurring_Rule_Date_Byuh
 			, Donor_First_Recurring_Rule_Date_Ldsbc
+			, Donor_Recurring_Total_Last_Month_Byu
+			, Donor_Recurring_Total_Last_Month_Byui
+			, Donor_Recurring_Total_Last_Month_Byuh
+			, Donor_Recurring_Total_Last_Month_Ldsbc
+			, Donor_Recurring_Total_Month_Before_Last_Byu
+			, Donor_Recurring_Total_Month_Before_Last_Byui
+			, Donor_Recurring_Total_Month_Before_Last_Byuh
+			, Donor_Recurring_Total_Month_Before_Last_Ldsbc
 			'
 		, ' '
 		, ' '
@@ -14155,7 +14171,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((149 - 1374000)/-1)
+			SET @Barsoom_Base = ((156 - 1390200)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -14469,6 +14485,14 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 									, Donor_First_Recurring_Rule_Date_Byui
 									, Donor_First_Recurring_Rule_Date_Byuh
 									, Donor_First_Recurring_Rule_Date_Ldsbc
+									, Donor_Recurring_Total_Last_Month_Byu
+									, Donor_Recurring_Total_Last_Month_Byui
+									, Donor_Recurring_Total_Last_Month_Byuh
+									, Donor_Recurring_Total_Last_Month_Ldsbc
+									, Donor_Recurring_Total_Month_Before_Last_Byu
+									, Donor_Recurring_Total_Month_Before_Last_Byui
+									, Donor_Recurring_Total_Month_Before_Last_Byuh
+									, Donor_Recurring_Total_Month_Before_Last_Ldsbc
 									)
 									SELECT DISTINCT A.Donor_Key
 										, COALESCE(A.Activity_Group_Key,0) AS Activity_Group_Key
@@ -14772,6 +14796,14 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_First_Recurring_Rule_Date_Byui
 										, NULL AS Donor_First_Recurring_Rule_Date_Byuh
 										, NULL AS Donor_First_Recurring_Rule_Date_Ldsbc
+										, NULL AS Donor_Recurring_Total_Last_Month_Byu
+										, NULL AS Donor_Recurring_Total_Last_Month_Byui
+										, NULL AS Donor_Recurring_Total_Last_Month_Byuh
+										, NULL AS Donor_Recurring_Total_Last_Month_Ldsbc
+										, NULL AS Donor_Recurring_Total_Month_Before_Last_Byu
+										, NULL AS Donor_Recurring_Total_Month_Before_Last_Byui
+										, NULL AS Donor_Recurring_Total_Month_Before_Last_Byuh
+										, NULL AS Donor_Recurring_Total_Month_Before_Last_Ldsbc
 										FROM OneAccord_Warehouse.dbo._Donor_Pre_Dim A
 											INNER JOIN OneAccord_Warehouse.dbo._Numbered_ContactIds NUM ON A.Donor_Key = NUM.ContactId 
 											LEFT JOIN OneAccord_Warehouse.dbo._Donor_Gender_ B ON A.GenderCode = B.Column_Value
@@ -22410,13 +22442,37 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-								, ''D1'' AS Donor_Retention_Type_Code_Byu
-								FROM Ext_Donor_Score A
-									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+							SELECT Donor_Key
+								, Donor_Retention_Type_Code_Byu
+								FROM
+									(SELECT Donor_Key
+										, Donor_Retention_Type_Code_Byu
+										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byu) AS RowNum
+										FROM
+											(SELECT A.Donor_Key
+												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu
+												FROM
+													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+														FROM Ext_Donor_Score A
+															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+														WHERE 1 = 1
+															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+															AND B.New_Inst = ''BYU''
+															AND A.StatusCode = 1 -- Active
+														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+													) A
+													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																						AND A.ModifiedOn = B.ModifiedOn
+													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+												WHERE 1 = 1
+													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+													AND C.New_Inst = ''BYU''
+													AND B.StatusCode = 1 -- Active
+											) A
+									) A
 								WHERE 1 = 1
-									AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-									AND B.New_Inst = ''BYU''
+									AND RowNum = 1
 							) S ON T.Donor_Key = S.Donor_Key
 						WHEN MATCHED THEN 
 							UPDATE
@@ -22810,13 +22866,37 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-								, ''D1'' AS Donor_Retention_Type_Code_Byui
-								FROM Ext_Donor_Score A
-									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+							SELECT Donor_Key
+								, Donor_Retention_Type_Code_Byui
+								FROM
+									(SELECT Donor_Key
+										, Donor_Retention_Type_Code_Byui
+										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byui) AS RowNum
+										FROM
+											(SELECT A.Donor_Key
+												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui
+												FROM
+													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+														FROM Ext_Donor_Score A
+															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+														WHERE 1 = 1
+															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+															AND B.New_Inst = ''BYUI''
+															AND A.StatusCode = 1 -- Active
+														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+													) A
+													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																						AND A.ModifiedOn = B.ModifiedOn
+													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+												WHERE 1 = 1
+													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+													AND C.New_Inst = ''BYUI''
+													AND B.StatusCode = 1 -- Active
+											) A
+									) A
 								WHERE 1 = 1
-									AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-									AND B.New_Inst = ''BYUI''
+									AND RowNum = 1
 							) S ON T.Donor_Key = S.Donor_Key
 						WHEN MATCHED THEN 
 							UPDATE
@@ -23210,13 +23290,37 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-								, ''D1'' AS Donor_Retention_Type_Code_Byuh
-								FROM Ext_Donor_Score A
-									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+							SELECT Donor_Key
+								, Donor_Retention_Type_Code_Byuh
+								FROM
+									(SELECT Donor_Key
+										, Donor_Retention_Type_Code_Byuh
+										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byuh) AS RowNum
+										FROM
+											(SELECT A.Donor_Key
+												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh
+												FROM
+													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+														FROM Ext_Donor_Score A
+															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+														WHERE 1 = 1
+															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+															AND B.New_Inst = ''BYUH''
+															AND A.StatusCode = 1 -- Active
+														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+													) A
+													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																						AND A.ModifiedOn = B.ModifiedOn
+													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+												WHERE 1 = 1
+													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+													AND C.New_Inst = ''BYUH''
+													AND B.StatusCode = 1 -- Active
+											) A
+									) A
 								WHERE 1 = 1
-									AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-									AND B.New_Inst = ''BYUH''
+									AND RowNum = 1
 							) S ON T.Donor_Key = S.Donor_Key
 						WHEN MATCHED THEN 
 							UPDATE
@@ -23610,13 +23714,37 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, '	BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-								, ''D1'' AS Donor_Retention_Type_Code_Ldsbc
-								FROM Ext_Donor_Score A
-									INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+							SELECT Donor_Key
+								, Donor_Retention_Type_Code_Ldsbc
+								FROM
+									(SELECT Donor_Key
+										, Donor_Retention_Type_Code_Ldsbc
+										, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Ldsbc) AS RowNum
+										FROM
+											(SELECT A.Donor_Key
+												, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc
+												FROM
+													(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+														, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+														FROM Ext_Donor_Score A
+															INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+														WHERE 1 = 1
+															AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+															AND B.New_Inst = ''LDSBC''
+															AND A.StatusCode = 1 -- Active
+														GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+													) A
+													INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																						AND A.ModifiedOn = B.ModifiedOn
+													INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+												WHERE 1 = 1
+													AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+													AND C.New_Inst = ''LDSBC''
+													AND B.StatusCode = 1 -- Active
+											) A
+									) A
 								WHERE 1 = 1
-									AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-									AND B.New_Inst = ''LDSBC''
+									AND RowNum = 1
 							) S ON T.Donor_Key = S.Donor_Key
 						WHEN MATCHED THEN 
 							UPDATE
@@ -30283,13 +30411,37 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			;
 			MERGE INTO _Donor_Dim T
 				USING (	
-						SELECT DISTINCT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
-							, ''D1'' AS Donor_Type_Code_Ldsp
-							FROM Ext_Donor_Score A
-								INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+						SELECT Donor_Key
+							, Donor_Type_Code_Ldsp
+							FROM
+								(SELECT Donor_Key
+									, Donor_Type_Code_Ldsp
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Type_Code_Ldsp) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Type_Code_Ldsp
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+														AND B.New_Inst = ''LDSP''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+												AND C.New_Inst = ''LDSP''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
 							WHERE 1 = 1
-								AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
-								AND B.New_Inst = ''LDSP''
+						AND RowNum = 1
 					) S ON T.Donor_Key = S.Donor_Key
 				WHEN MATCHED THEN 
 					UPDATE
@@ -32532,9 +32684,173 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
 		END CATCH 
 		' -- Attribute_6
-	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+	, 'BEGIN TRY
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor) AS Donor_Key
+							, SUM(A.New_GiftAmount) AS Donor_Recurring_Total_Last_Month_Byu
+							FROM _Gift_ A
+								INNER JOIN Ext_Fund_Account B ON A.New_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND (A.Lds_RecurringGiftRule IS NOT NULL
+										OR A.Lds_RecurringGiftGroup IS NOT NULL)
+								AND C.New_Inst = ''BYU''
+								AND CONVERT(DATE,A.New_ReceiptDate,101) BETWEEN CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE())-1, 0),101)
+																	AND CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE())-1, -1),101)
+							GROUP BY COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Total_Last_Month_Byu = S.Donor_Recurring_Total_Last_Month_Byu
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor) AS Donor_Key
+							, SUM(A.New_GiftAmount) AS Donor_Recurring_Total_Last_Month_Byui
+							FROM _Gift_ A
+								INNER JOIN Ext_Fund_Account B ON A.New_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND (A.Lds_RecurringGiftRule IS NOT NULL
+										OR A.Lds_RecurringGiftGroup IS NOT NULL)
+								AND C.New_Inst = ''BYUI''
+								AND CONVERT(DATE,A.New_ReceiptDate,101) BETWEEN CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE())-1, 0),101)
+																	AND CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE())-1, -1),101)
+							GROUP BY COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Total_Last_Month_Byui = S.Donor_Recurring_Total_Last_Month_Byui
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor) AS Donor_Key
+							, SUM(A.New_GiftAmount) AS Donor_Recurring_Total_Last_Month_Byuh
+							FROM _Gift_ A
+								INNER JOIN Ext_Fund_Account B ON A.New_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND (A.Lds_RecurringGiftRule IS NOT NULL
+										OR A.Lds_RecurringGiftGroup IS NOT NULL)
+								AND C.New_Inst = ''BYUH''
+								AND CONVERT(DATE,A.New_ReceiptDate,101) BETWEEN CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE())-1, 0),101)
+																	AND CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE())-1, -1),101)
+							GROUP BY COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Total_Last_Month_Byuh = S.Donor_Recurring_Total_Last_Month_Byuh
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor) AS Donor_Key
+							, SUM(A.New_GiftAmount) AS Donor_Recurring_Total_Last_Month_Ldsbc
+							FROM _Gift_ A
+								INNER JOIN Ext_Fund_Account B ON A.New_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND (A.Lds_RecurringGiftRule IS NOT NULL
+										OR A.Lds_RecurringGiftGroup IS NOT NULL)
+								AND C.New_Inst = ''LDSBC''
+								AND CONVERT(DATE,A.New_ReceiptDate,101) BETWEEN CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE())-1, 0),101)
+																	AND CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE())-1, -1),101)
+							GROUP BY COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Total_Last_Month_Ldsbc = S.Donor_Recurring_Total_Last_Month_Ldsbc
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor) AS Donor_Key
+							, SUM(A.New_GiftAmount) AS Donor_Recurring_Total_Month_Before_Last_Byu
+							FROM _Gift_ A
+								INNER JOIN Ext_Fund_Account B ON A.New_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND (A.Lds_RecurringGiftRule IS NOT NULL
+										OR A.Lds_RecurringGiftGroup IS NOT NULL)
+								AND C.New_Inst = ''BYU''
+								AND CONVERT(DATE,A.New_ReceiptDate,101) BETWEEN CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE())-2, 0),101)
+																	AND CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE())-2, -1),101)
+							GROUP BY COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor)	
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Total_Month_Before_Last_Byu = S.Donor_Recurring_Total_Month_Before_Last_Byu
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor) AS Donor_Key
+							, SUM(A.New_GiftAmount) AS Donor_Recurring_Total_Month_Before_Last_Byui
+							FROM _Gift_ A
+								INNER JOIN Ext_Fund_Account B ON A.New_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND (A.Lds_RecurringGiftRule IS NOT NULL
+										OR A.Lds_RecurringGiftGroup IS NOT NULL)
+								AND C.New_Inst = ''BYUI''
+								AND CONVERT(DATE,A.New_ReceiptDate,101) BETWEEN CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE())-2, 0),101)
+																	AND CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE())-2, -1),101)
+							GROUP BY COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Total_Month_Before_Last_Byui = S.Donor_Recurring_Total_Month_Before_Last_Byui
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor) AS Donor_Key
+							, SUM(A.New_GiftAmount) AS Donor_Recurring_Total_Month_Before_Last_Byuh
+							FROM _Gift_ A
+								INNER JOIN Ext_Fund_Account B ON A.New_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND (A.Lds_RecurringGiftRule IS NOT NULL
+										OR A.Lds_RecurringGiftGroup IS NOT NULL)
+								AND C.New_Inst = ''BYUH''
+								AND CONVERT(DATE,A.New_ReceiptDate,101) BETWEEN CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE())-2, 0),101)
+																	AND CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE())-2, -1),101)
+							GROUP BY COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Total_Month_Before_Last_Byuh = S.Donor_Recurring_Total_Month_Before_Last_Byuh
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor) AS Donor_Key
+							, SUM(A.New_GiftAmount) AS Donor_Recurring_Total_Month_Before_Last_Ldsbc
+							FROM _Gift_ A
+								INNER JOIN Ext_Fund_Account B ON A.New_FundAccount = B.New_FundAccountId
+								INNER JOIN Ext_Institution C ON B.New_InstitutionalHierarchy = C.New_InstitutionId
+							WHERE 1 = 1
+								AND (A.Lds_RecurringGiftRule IS NOT NULL
+										OR A.Lds_RecurringGiftGroup IS NOT NULL)
+								AND C.New_Inst = ''LDSBC''
+								AND CONVERT(DATE,A.New_ReceiptDate,101) BETWEEN CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE())-2, 0),101)
+																	AND CONVERT(DATE,DATEADD(MONTH, DATEDIFF(MONTH, -1, GETDATE())-2, -1),101)
+							GROUP BY COALESCE(A.New_ConstituentDonor,A.New_OrganizationDonor)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Total_Month_Before_Last_Ldsbc = S.Donor_Recurring_Total_Month_Before_Last_Ldsbc
+						;
+		END TRY 
+		BEGIN CATCH
+			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+			SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+			SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+			SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+			SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+			SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Merge_Into_Donor_Dim_2'', @Alpha_Step_Number = ''164X'', @Alpha_Step_Name = ''_Merge_Into_Donor_Dim_2 - Error'', @Alpha_Result = 0
+			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+		END CATCH
 		' -- Attribute_7
-	, ' ' -- Attribute_8
+	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;  
+		' -- Attribute_8
 	, ' ' -- Attribute_9
 	, ' ' -- Attribute_10
 	, ' ' -- Attribute_11

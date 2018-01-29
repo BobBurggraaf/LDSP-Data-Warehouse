@@ -2541,12 +2541,18 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Plus_Institution UNIQUEIDENTIFIER
 			, Plus_I5LegacyDonorTypeDate DATETIME
 			, Plus_I5LegacyDonorType NVARCHAR(10)
+			, ModifiedOn DATETIME
+			, StatusCode INT
+			, StateCode INT
 			' -- Create_Fields
 		, '	Plus_DonorScoreId
 			, Plus_Constituent
 			, Plus_Institution
 			, Plus_I5LegacyDonorTypeDate
 			, Plus_I5LegacyDonorType
+			, ModifiedOn
+			, StatusCode
+			, StateCode
 			' -- Insert_Fields
 		, 'Plus_DonorScoreBase
 			WHERE 1 = 1
@@ -2558,6 +2564,9 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Plus_Institution
 			, Plus_I5LegacyDonorTypeDate
 			, Plus_I5LegacyDonorType
+			, ModifiedOn
+			, StatusCode
+			, StateCode
 			' -- Attribute_1
 		, ' ' -- Attribute_2
 		, ' ' -- Attribute_3

@@ -3082,6 +3082,14 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Recurring_Rule_Date_Byui DATE
 			, Donor_First_Recurring_Rule_Date_Byuh DATE
 			, Donor_First_Recurring_Rule_Date_Ldsbc DATE
+			, Donor_Recurring_Total_Last_Month_Byu MONEY
+			, Donor_Recurring_Total_Last_Month_Byui MONEY
+			, Donor_Recurring_Total_Last_Month_Byuh MONEY
+			, Donor_Recurring_Total_Last_Month_Ldsbc MONEY
+			, Donor_Recurring_Total_Month_Before_Last_Byu MONEY
+			, Donor_Recurring_Total_Month_Before_Last_Byui MONEY
+			, Donor_Recurring_Total_Month_Before_Last_Byuh MONEY
+			, Donor_Recurring_Total_Month_Before_Last_Ldsbc MONEY
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3385,6 +3393,14 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Recurring_Rule_Date_Byui
 			, Donor_First_Recurring_Rule_Date_Byuh
 			, Donor_First_Recurring_Rule_Date_Ldsbc
+			, Donor_Recurring_Total_Last_Month_Byu
+			, Donor_Recurring_Total_Last_Month_Byui
+			, Donor_Recurring_Total_Last_Month_Byuh
+			, Donor_Recurring_Total_Last_Month_Ldsbc
+			, Donor_Recurring_Total_Month_Before_Last_Byu
+			, Donor_Recurring_Total_Month_Before_Last_Byui
+			, Donor_Recurring_Total_Month_Before_Last_Byuh
+			, Donor_Recurring_Total_Month_Before_Last_Ldsbc
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

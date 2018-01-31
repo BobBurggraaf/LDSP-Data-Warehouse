@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1393290
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1401949
    
 ******************************************************************************/
 
@@ -13204,6 +13204,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Recurring_Gift_Upgrade_Byui NVARCHAR(1)
 			, Donor_Recurring_Gift_Upgrade_Byuh NVARCHAR(1)
 			, Donor_Recurring_Gift_Upgrade_Ldsbc NVARCHAR(1)
+			, Donor_Total_Giving_To_Church_Current_Year_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_1_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_2_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt MONEY
 			'
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -13519,6 +13525,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Recurring_Gift_Upgrade_Byui
 			, Donor_Recurring_Gift_Upgrade_Byuh
 			, Donor_Recurring_Gift_Upgrade_Ldsbc
+			, Donor_Total_Giving_To_Church_Current_Year_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_1_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_2_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
 			'
 		, ' '
 		, ' '
@@ -14179,7 +14191,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((110 - 1393400)/-1)
+			SET @Barsoom_Base = ((151 - 1402100)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -14505,6 +14517,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 									, Donor_Recurring_Gift_Upgrade_Byui
 									, Donor_Recurring_Gift_Upgrade_Byuh
 									, Donor_Recurring_Gift_Upgrade_Ldsbc
+									, Donor_Total_Giving_To_Church_Current_Year_Amt
+									, Donor_Total_Giving_To_Church_Current_Year_Minus_1_Amt
+									, Donor_Total_Giving_To_Church_Current_Year_Minus_2_Amt
+									, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
+									, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
+									, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
 									)
 									SELECT DISTINCT A.Donor_Key
 										, COALESCE(A.Activity_Group_Key,0) AS Activity_Group_Key
@@ -14820,6 +14838,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_Recurring_Gift_Upgrade_Byui
 										, NULL AS Donor_Recurring_Gift_Upgrade_Byuh
 										, NULL AS Donor_Recurring_Gift_Upgrade_Ldsbc
+										, NULL AS Donor_Total_Giving_To_Church_Current_Year_Amt
+										, NULL AS Donor_Total_Giving_To_Church_Current_Year_Minus_1_Amt
+										, NULL AS Donor_Total_Giving_To_Church_Current_Year_Minus_2_Amt
+										, NULL AS Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
+										, NULL AS Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
+										, NULL AS Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
 										FROM OneAccord_Warehouse.dbo._Donor_Pre_Dim A
 											INNER JOIN OneAccord_Warehouse.dbo._Numbered_ContactIds NUM ON A.Donor_Key = NUM.ContactId 
 											LEFT JOIN OneAccord_Warehouse.dbo._Donor_Gender_ B ON A.GenderCode = B.Column_Value
@@ -32922,9 +32946,129 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
 		END CATCH  
 		' -- Attribute_8
-	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+	, 'BEGIN TRY
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Giving_To_Church_Current_Year_Amt
+							FROM _Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+															AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+								AND A.Plus_Type != 100000001 --Exclude Influence
+								AND A.Plus_SubType != 100000002 --Exclude Match
+								AND B.New_Inst = ''Church''
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_To_Church_Current_Year_Amt = S.Donor_Total_Giving_To_Church_Current_Year_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Giving_To_Church_Current_Year_Minus_1_Amt
+							FROM _Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,0),112) -- Beginning of this year -1
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,-1),112) -- End of this year -1
+								AND A.Plus_Type != 100000001 --Exclude Influence
+								AND A.Plus_SubType != 100000002 --Exclude Match
+								AND B.New_Inst = ''Church''
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_To_Church_Current_Year_Minus_1_Amt = S.Donor_Total_Giving_To_Church_Current_Year_Minus_1_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Giving_To_Church_Current_Year_Minus_2_Amt
+							FROM _Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,0),112) -- Beginning of this year -2
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,-1),112) -- End of this year -2
+								AND A.Plus_Type != 100000001 --Exclude Influence
+								AND A.Plus_SubType != 100000002 --Exclude Match
+								AND B.New_Inst = ''Church''
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_To_Church_Current_Year_Minus_2_Amt = S.Donor_Total_Giving_To_Church_Current_Year_Minus_2_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
+							FROM _Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,0),112) -- Beginning of this year -3
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,-1),112) -- End of this year -3
+								AND A.Plus_Type != 100000001 --Exclude Influence
+								AND A.Plus_SubType != 100000002 --Exclude Match
+								AND B.New_Inst = ''Church''
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt = S.Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
+							FROM _Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,0),112) -- Beginning of this year -4
+															AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,-1),112) -- End of this year -4
+								AND A.Plus_Type != 100000001 --Exclude Influence
+								AND A.Plus_SubType != 100000002 --Exclude Match
+								AND B.New_Inst = ''Church''
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt = S.Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
+							FROM _Gift_Credit_ A
+								INNER JOIN _Hier_Dim B ON A.Plus_InstitutionalHieararchy = B.Hier_Key
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- Beginning of this year -5
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,-1),112) -- End of this year -5
+								AND A.Plus_Type != 100000001 --Exclude Influence
+								AND A.Plus_SubType != 100000002 --Exclude Match
+								AND B.New_Inst = ''Church''
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt = S.Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
+						;
+		END TRY 
+		BEGIN CATCH
+			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+			SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+			SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+			SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+			SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+			SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Merge_Into_Donor_Dim_2'', @Alpha_Step_Number = ''164X'', @Alpha_Step_Name = ''_Merge_Into_Donor_Dim_2 - Error'', @Alpha_Result = 0
+			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+		END CATCH 
 		' -- Attribute_9
-	, ' ' -- Attribute_10
+	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+		' -- Attribute_10
 	, ' ' -- Attribute_11
 	, ' ' -- Attribute_12
 	, ' ' -- Attribute_13

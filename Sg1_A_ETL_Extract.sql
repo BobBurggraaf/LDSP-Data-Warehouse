@@ -6601,6 +6601,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 		, 'Plus_RecurringGiftRulesBase A
 				LEFT JOIN _MDT_Conversion_Dim B ON YEAR(A.Plus_PaymentStart) = B.Date_Year
 				LEFT JOIN _MDT_Conversion_Dim C ON YEAR(A.Plus_PaymentStop) = C.Date_Year
+				LEFT JOIN _MDT_Conversion_Dim D ON YEAR(A.CreatedOn) = D.Date_Year
 			' -- From_Statement
 		, ' ' -- Where_Statement
 		, 'Plus_RecurringGiftRulesId
@@ -6619,7 +6620,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Plus_Group
 			, Plus_Type
 			, Plus_Organization
-			, CreatedOn
+			, CASE WHEN DATENAME(dy,A.CreatedOn) BETWEEN C.Mdt_Begin_Date_Number AND C.Mdt_End_Date_Number THEN DATEADD(hh,-6,A.CreatedOn)
+					ELSE DATEADD(hh,-7,A.CreatedOn) END AS CreatedOn
 			' -- Attribute_1
 		, ' ' -- Attribute_2
 		, ' ' -- Attribute_3

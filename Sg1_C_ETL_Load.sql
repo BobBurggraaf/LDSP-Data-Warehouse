@@ -3094,6 +3094,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Recurring_Gift_Upgrade_Byui NVARCHAR(1)
 			, Donor_Recurring_Gift_Upgrade_Byuh NVARCHAR(1)
 			, Donor_Recurring_Gift_Upgrade_Ldsbc NVARCHAR(1)
+			, Donor_Total_Giving_To_Church_Current_Year_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_1_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_2_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt MONEY
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt MONEY
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3409,6 +3415,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Recurring_Gift_Upgrade_Byui
 			, Donor_Recurring_Gift_Upgrade_Byuh
 			, Donor_Recurring_Gift_Upgrade_Ldsbc
+			, Donor_Total_Giving_To_Church_Current_Year_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_1_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_2_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
+			, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

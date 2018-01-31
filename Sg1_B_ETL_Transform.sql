@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1390044
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1393290
    
 ******************************************************************************/
 
@@ -13200,6 +13200,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Recurring_Total_Month_Before_Last_Byui MONEY
 			, Donor_Recurring_Total_Month_Before_Last_Byuh MONEY
 			, Donor_Recurring_Total_Month_Before_Last_Ldsbc MONEY
+			, Donor_Recurring_Gift_Upgrade_Byu NVARCHAR(1)
+			, Donor_Recurring_Gift_Upgrade_Byui NVARCHAR(1)
+			, Donor_Recurring_Gift_Upgrade_Byuh NVARCHAR(1)
+			, Donor_Recurring_Gift_Upgrade_Ldsbc NVARCHAR(1)
 			'
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -13511,6 +13515,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Recurring_Total_Month_Before_Last_Byui
 			, Donor_Recurring_Total_Month_Before_Last_Byuh
 			, Donor_Recurring_Total_Month_Before_Last_Ldsbc
+			, Donor_Recurring_Gift_Upgrade_Byu
+			, Donor_Recurring_Gift_Upgrade_Byui
+			, Donor_Recurring_Gift_Upgrade_Byuh
+			, Donor_Recurring_Gift_Upgrade_Ldsbc
 			'
 		, ' '
 		, ' '
@@ -14171,7 +14179,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((156 - 1390200)/-1)
+			SET @Barsoom_Base = ((110 - 1393400)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -14493,6 +14501,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 									, Donor_Recurring_Total_Month_Before_Last_Byui
 									, Donor_Recurring_Total_Month_Before_Last_Byuh
 									, Donor_Recurring_Total_Month_Before_Last_Ldsbc
+									, Donor_Recurring_Gift_Upgrade_Byu
+									, Donor_Recurring_Gift_Upgrade_Byui
+									, Donor_Recurring_Gift_Upgrade_Byuh
+									, Donor_Recurring_Gift_Upgrade_Ldsbc
 									)
 									SELECT DISTINCT A.Donor_Key
 										, COALESCE(A.Activity_Group_Key,0) AS Activity_Group_Key
@@ -14804,6 +14816,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_Recurring_Total_Month_Before_Last_Byui
 										, NULL AS Donor_Recurring_Total_Month_Before_Last_Byuh
 										, NULL AS Donor_Recurring_Total_Month_Before_Last_Ldsbc
+										, NULL AS Donor_Recurring_Gift_Upgrade_Byu
+										, NULL AS Donor_Recurring_Gift_Upgrade_Byui
+										, NULL AS Donor_Recurring_Gift_Upgrade_Byuh
+										, NULL AS Donor_Recurring_Gift_Upgrade_Ldsbc
 										FROM OneAccord_Warehouse.dbo._Donor_Pre_Dim A
 											INNER JOIN OneAccord_Warehouse.dbo._Numbered_ContactIds NUM ON A.Donor_Key = NUM.ContactId 
 											LEFT JOIN OneAccord_Warehouse.dbo._Donor_Gender_ B ON A.GenderCode = B.Column_Value
@@ -32849,9 +32865,65 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
 		END CATCH
 		' -- Attribute_7
-	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1;  
+	, 'BEGIN TRY
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, CASE WHEN Donor_Recurring_Total_Last_Month_Byu > Donor_Recurring_Total_Month_Before_Last_Byu THEN ''Y'' 
+									ELSE ''N'' END AS Donor_Recurring_Gift_Upgrade_Byu
+							FROM _Donor_Dim
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Gift_Upgrade_Byu = S.Donor_Recurring_Gift_Upgrade_Byu
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, CASE WHEN Donor_Recurring_Total_Last_Month_Byui > Donor_Recurring_Total_Month_Before_Last_Byui THEN ''Y'' 
+									ELSE ''N'' END AS Donor_Recurring_Gift_Upgrade_Byui
+							FROM _Donor_Dim
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Gift_Upgrade_Byui = S.Donor_Recurring_Gift_Upgrade_Byui
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, CASE WHEN Donor_Recurring_Total_Last_Month_Byuh > Donor_Recurring_Total_Month_Before_Last_Byuh THEN ''Y'' 
+									ELSE ''N'' END AS Donor_Recurring_Gift_Upgrade_Byuh
+							FROM _Donor_Dim
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Gift_Upgrade_Byuh = S.Donor_Recurring_Gift_Upgrade_Byuh
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, CASE WHEN Donor_Recurring_Total_Last_Month_Ldsbc > Donor_Recurring_Total_Month_Before_Last_Ldsbc THEN ''Y''
+									ELSE ''N'' END AS Donor_Recurring_Gift_Upgrade_Ldsbc
+							FROM _Donor_Dim
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Recurring_Gift_Upgrade_Ldsbc = S.Donor_Recurring_Gift_Upgrade_Ldsbc
+						;
+		END TRY 
+		BEGIN CATCH
+			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+			SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+			SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+			SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+			SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+			SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Merge_Into_Donor_Dim_2'', @Alpha_Step_Number = ''164X'', @Alpha_Step_Name = ''_Merge_Into_Donor_Dim_2 - Error'', @Alpha_Result = 0
+			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+		END CATCH  
 		' -- Attribute_8
-	, ' ' -- Attribute_9
+	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+		' -- Attribute_9
 	, ' ' -- Attribute_10
 	, ' ' -- Attribute_11
 	, ' ' -- Attribute_12

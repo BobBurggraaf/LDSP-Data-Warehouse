@@ -3090,6 +3090,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Recurring_Total_Month_Before_Last_Byui MONEY
 			, Donor_Recurring_Total_Month_Before_Last_Byuh MONEY
 			, Donor_Recurring_Total_Month_Before_Last_Ldsbc MONEY
+			, Donor_Recurring_Gift_Upgrade_Byu NVARCHAR(1)
+			, Donor_Recurring_Gift_Upgrade_Byui NVARCHAR(1)
+			, Donor_Recurring_Gift_Upgrade_Byuh NVARCHAR(1)
+			, Donor_Recurring_Gift_Upgrade_Ldsbc NVARCHAR(1)
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3401,6 +3405,10 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Recurring_Total_Month_Before_Last_Byui
 			, Donor_Recurring_Total_Month_Before_Last_Byuh
 			, Donor_Recurring_Total_Month_Before_Last_Ldsbc
+			, Donor_Recurring_Gift_Upgrade_Byu
+			, Donor_Recurring_Gift_Upgrade_Byui
+			, Donor_Recurring_Gift_Upgrade_Byuh
+			, Donor_Recurring_Gift_Upgrade_Ldsbc
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

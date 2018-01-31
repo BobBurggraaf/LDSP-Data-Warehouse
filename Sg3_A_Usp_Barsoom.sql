@@ -12,7 +12,7 @@
    Set in the Create_Trans_Load_Table
    Line: 11644
 	DECLARE @Barsoom_Base BIGINT
-		SET @Barsoom_Base = ((156 - 1390200)/-1)
+		SET @Barsoom_Base = ((110 - 1393400)/-1)
 	EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 
 	SELECT * 

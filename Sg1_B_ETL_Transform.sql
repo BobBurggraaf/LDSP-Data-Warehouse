@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1440535
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1440571
    
 ******************************************************************************/
 
@@ -14231,7 +14231,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((165 - 1440700)/-1)
+			SET @Barsoom_Base = ((129 - 1440700)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -20999,7 +20999,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT ContactId AS Donor_Key
+							SELECT DISTINCT ContactId AS Donor_Key
 								, ''Y'' AS Donor_BYU_Current_Student
 								FROM _Student_Dim
 								WHERE 1 = 1
@@ -21025,7 +21025,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT ContactId AS Donor_Key
+							SELECT DISTINCT ContactId AS Donor_Key
 								, ''Y'' AS Donor_BYUI_Current_Student
 								FROM _Student_Dim
 								WHERE 1 = 1
@@ -21051,7 +21051,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT ContactId AS Donor_Key
+							SELECT DISTINCT ContactId AS Donor_Key
 								, ''Y'' AS Donor_BYUH_Current_Student
 								FROM _Student_Dim
 								WHERE 1 = 1
@@ -21077,7 +21077,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT ContactId AS Donor_Key
+							SELECT DISTINCT ContactId AS Donor_Key
 								, ''Y'' AS Donor_LDSBC_Current_Student
 								FROM _Student_Dim
 								WHERE 1 = 1

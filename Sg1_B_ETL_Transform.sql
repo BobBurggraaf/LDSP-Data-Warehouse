@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1401949
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1440535
    
 ******************************************************************************/
 
@@ -13210,6 +13210,26 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt MONEY
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt MONEY
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt MONEY
+			, Donor_Retention_Type_Code_Byu_Minus_1 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byu_Minus_2 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byu_Minus_3 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byu_Minus_4 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byu_Minus_5 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_1 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_2 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_3 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_4 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_5 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_1 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_2 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_3 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_4 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_5 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_1 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_2 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_3 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_4 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_5 NVARCHAR(2)
 			'
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -13531,6 +13551,26 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
+			, Donor_Retention_Type_Code_Byu_Minus_1
+			, Donor_Retention_Type_Code_Byu_Minus_2
+			, Donor_Retention_Type_Code_Byu_Minus_3
+			, Donor_Retention_Type_Code_Byu_Minus_4
+			, Donor_Retention_Type_Code_Byu_Minus_5
+			, Donor_Retention_Type_Code_Byui_Minus_1
+			, Donor_Retention_Type_Code_Byui_Minus_2
+			, Donor_Retention_Type_Code_Byui_Minus_3
+			, Donor_Retention_Type_Code_Byui_Minus_4
+			, Donor_Retention_Type_Code_Byui_Minus_5
+			, Donor_Retention_Type_Code_Byuh_Minus_1
+			, Donor_Retention_Type_Code_Byuh_Minus_2
+			, Donor_Retention_Type_Code_Byuh_Minus_3
+			, Donor_Retention_Type_Code_Byuh_Minus_4
+			, Donor_Retention_Type_Code_Byuh_Minus_5
+			, Donor_Retention_Type_Code_Ldsbc_Minus_1
+			, Donor_Retention_Type_Code_Ldsbc_Minus_2
+			, Donor_Retention_Type_Code_Ldsbc_Minus_3
+			, Donor_Retention_Type_Code_Ldsbc_Minus_4
+			, Donor_Retention_Type_Code_Ldsbc_Minus_5
 			'
 		, ' '
 		, ' '
@@ -14191,7 +14231,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((151 - 1402100)/-1)
+			SET @Barsoom_Base = ((165 - 1440700)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -14523,6 +14563,26 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 									, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
 									, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
 									, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
+									, Donor_Retention_Type_Code_Byu_Minus_1
+									, Donor_Retention_Type_Code_Byu_Minus_2
+									, Donor_Retention_Type_Code_Byu_Minus_3
+									, Donor_Retention_Type_Code_Byu_Minus_4
+									, Donor_Retention_Type_Code_Byu_Minus_5
+									, Donor_Retention_Type_Code_Byui_Minus_1
+									, Donor_Retention_Type_Code_Byui_Minus_2
+									, Donor_Retention_Type_Code_Byui_Minus_3
+									, Donor_Retention_Type_Code_Byui_Minus_4
+									, Donor_Retention_Type_Code_Byui_Minus_5
+									, Donor_Retention_Type_Code_Byuh_Minus_1
+									, Donor_Retention_Type_Code_Byuh_Minus_2
+									, Donor_Retention_Type_Code_Byuh_Minus_3
+									, Donor_Retention_Type_Code_Byuh_Minus_4
+									, Donor_Retention_Type_Code_Byuh_Minus_5
+									, Donor_Retention_Type_Code_Ldsbc_Minus_1
+									, Donor_Retention_Type_Code_Ldsbc_Minus_2
+									, Donor_Retention_Type_Code_Ldsbc_Minus_3
+									, Donor_Retention_Type_Code_Ldsbc_Minus_4
+									, Donor_Retention_Type_Code_Ldsbc_Minus_5
 									)
 									SELECT DISTINCT A.Donor_Key
 										, COALESCE(A.Activity_Group_Key,0) AS Activity_Group_Key
@@ -14844,6 +14904,26 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
 										, NULL AS Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
 										, NULL AS Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
+										, NULL AS Donor_Retention_Type_Code_Byu_Minus_1
+										, NULL AS Donor_Retention_Type_Code_Byu_Minus_2
+										, NULL AS Donor_Retention_Type_Code_Byu_Minus_3
+										, NULL AS Donor_Retention_Type_Code_Byu_Minus_4
+										, NULL AS Donor_Retention_Type_Code_Byu_Minus_5
+										, NULL AS Donor_Retention_Type_Code_Byui_Minus_1
+										, NULL AS Donor_Retention_Type_Code_Byui_Minus_2
+										, NULL AS Donor_Retention_Type_Code_Byui_Minus_3
+										, NULL AS Donor_Retention_Type_Code_Byui_Minus_4
+										, NULL AS Donor_Retention_Type_Code_Byui_Minus_5
+										, NULL AS Donor_Retention_Type_Code_Byuh_Minus_1
+										, NULL AS Donor_Retention_Type_Code_Byuh_Minus_2
+										, NULL AS Donor_Retention_Type_Code_Byuh_Minus_3
+										, NULL AS Donor_Retention_Type_Code_Byuh_Minus_4
+										, NULL AS Donor_Retention_Type_Code_Byuh_Minus_5
+										, NULL AS Donor_Retention_Type_Code_Ldsbc_Minus_1
+										, NULL AS Donor_Retention_Type_Code_Ldsbc_Minus_2
+										, NULL AS Donor_Retention_Type_Code_Ldsbc_Minus_3
+										, NULL AS Donor_Retention_Type_Code_Ldsbc_Minus_4
+										, NULL AS Donor_Retention_Type_Code_Ldsbc_Minus_5
 										FROM OneAccord_Warehouse.dbo._Donor_Pre_Dim A
 											INNER JOIN OneAccord_Warehouse.dbo._Numbered_ContactIds NUM ON A.Donor_Key = NUM.ContactId 
 											LEFT JOIN OneAccord_Warehouse.dbo._Donor_Gender_ B ON A.GenderCode = B.Column_Value
@@ -20919,13 +20999,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT DISTINCT A.New_StudentsAttendanceId AS Donor_Key
+							SELECT ContactId AS Donor_Key
 								, ''Y'' AS Donor_BYU_Current_Student
-								FROM Ext_Student A
-									LEFT JOIN Ext_University B ON A.New_University = B.New_UniversityId
+								FROM _Student_Dim
 								WHERE 1 = 1
-									AND B.New_University = ''BYU''
-										AND A.Plus_Year = CONVERT(NVARCHAR(10),YEAR(GETDATE()-1)) -- Current Year
+									AND Current_Year_Plus_4_Student = ''Y''
+									AND New_University = ''BYU''
 							) S ON T.Donor_Key = S.Donor_Key
 					WHEN MATCHED THEN 
 						UPDATE
@@ -20946,13 +21025,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT DISTINCT A.New_StudentsAttendanceId AS Donor_Key
+							SELECT ContactId AS Donor_Key
 								, ''Y'' AS Donor_BYUI_Current_Student
-								FROM Ext_Student A
-									LEFT JOIN Ext_University B ON A.New_University = B.New_UniversityId
+								FROM _Student_Dim
 								WHERE 1 = 1
-									AND B.New_University = ''BYUI''
-									AND A.Plus_Year = CONVERT(NVARCHAR(10),YEAR(GETDATE()-1)) -- Current Year
+									AND Current_Year_Plus_4_Student = ''Y''
+									AND New_University = ''BYUI''
 							) S ON T.Donor_Key = S.Donor_Key
 					WHEN MATCHED THEN 
 						UPDATE
@@ -20973,13 +21051,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT DISTINCT A.New_StudentsAttendanceId AS Donor_Key
+							SELECT ContactId AS Donor_Key
 								, ''Y'' AS Donor_BYUH_Current_Student
-								FROM Ext_Student A
-									LEFT JOIN Ext_University B ON A.New_University = B.New_UniversityId
+								FROM _Student_Dim
 								WHERE 1 = 1
-									AND B.New_University = ''BYUH''
-									AND A.Plus_Year = CONVERT(NVARCHAR(10),YEAR(GETDATE()-1)) -- Current Year
+									AND Current_Year_Plus_4_Student = ''Y''
+									AND New_University = ''BYUH''
 							) S ON T.Donor_Key = S.Donor_Key
 					WHEN MATCHED THEN 
 						UPDATE
@@ -21000,13 +21077,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, 'BEGIN TRY
 				MERGE INTO _Donor_Dim T
 					USING (
-							SELECT DISTINCT A.New_StudentsAttendanceId AS Donor_Key
+							SELECT ContactId AS Donor_Key
 								, ''Y'' AS Donor_LDSBC_Current_Student
-								FROM Ext_Student A
-									LEFT JOIN Ext_University B ON A.New_University = B.New_UniversityId
+								FROM _Student_Dim
 								WHERE 1 = 1
-									AND B.New_University = ''LDSBC''
-									AND A.Plus_Year = CONVERT(NVARCHAR(10),YEAR(GETDATE()-1)) -- Current Year
+									AND Current_Year_Plus_4_Student = ''Y''
+									AND New_University = ''LDSBC''
 							) S ON T.Donor_Key = S.Donor_Key
 					WHEN MATCHED THEN 
 						UPDATE
@@ -33067,9 +33143,781 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
 		END CATCH 
 		' -- Attribute_9
-	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+	, 'BEGIN TRY
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byu_Minus_1
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byu_Minus_1
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byu_Minus_1) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu_Minus_1
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-1
+														AND B.New_Inst = ''BYU''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-1
+												AND C.New_Inst = ''BYU''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byu_Minus_1 = S.Donor_Retention_Type_Code_Byu_Minus_1
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byu_Minus_2
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byu_Minus_2
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byu_Minus_2) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu_Minus_2
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-2
+														AND B.New_Inst = ''BYU''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-2
+												AND C.New_Inst = ''BYU''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byu_Minus_2 = S.Donor_Retention_Type_Code_Byu_Minus_2
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byu_Minus_3
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byu_Minus_3
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byu_Minus_3) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu_Minus_3
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-3
+														AND B.New_Inst = ''BYU''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-3
+												AND C.New_Inst = ''BYU''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byu_Minus_3 = S.Donor_Retention_Type_Code_Byu_Minus_3
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byu_Minus_4
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byu_Minus_4
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byu_Minus_4) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu_Minus_4
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-4
+														AND B.New_Inst = ''BYU''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-4
+												AND C.New_Inst = ''BYU''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byu_Minus_4 = S.Donor_Retention_Type_Code_Byu_Minus_4
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byu_Minus_5
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byu_Minus_5
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byu_Minus_5) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byu_Minus_5
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-5
+														AND B.New_Inst = ''BYU''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-5
+												AND C.New_Inst = ''BYU''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byu_Minus_5 = S.Donor_Retention_Type_Code_Byu_Minus_5
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byui_Minus_1
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byui_Minus_1
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byui_Minus_1) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui_Minus_1
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-1
+														AND B.New_Inst = ''BYUI''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-1
+												AND C.New_Inst = ''BYUI''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byui_Minus_1 = S.Donor_Retention_Type_Code_Byui_Minus_1
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byui_Minus_2
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byui_Minus_2
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byui_Minus_2) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui_Minus_2
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-2
+														AND B.New_Inst = ''BYUI''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-2
+												AND C.New_Inst = ''BYUI''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byui_Minus_2 = S.Donor_Retention_Type_Code_Byui_Minus_2
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byui_Minus_3
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byui_Minus_3
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byui_Minus_3) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui_Minus_3
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-3
+														AND B.New_Inst = ''BYUI''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-3
+												AND C.New_Inst = ''BYUI''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byui_Minus_3 = S.Donor_Retention_Type_Code_Byui_Minus_3
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byui_Minus_4
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byui_Minus_4
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byui_Minus_4) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui_Minus_4
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-4
+														AND B.New_Inst = ''BYUI''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-4
+												AND C.New_Inst = ''BYUI''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byui_Minus_4 = S.Donor_Retention_Type_Code_Byui_Minus_4
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byui_Minus_5
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byui_Minus_5
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byui_Minus_5) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byui_Minus_5
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-5
+														AND B.New_Inst = ''BYUI''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-5
+												AND C.New_Inst = ''BYUI''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byui_Minus_5 = S.Donor_Retention_Type_Code_Byui_Minus_5
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byuh_Minus_1
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byuh_Minus_1
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byuh_Minus_1) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh_Minus_1
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-1
+														AND B.New_Inst = ''BYUH''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-1
+												AND C.New_Inst = ''BYUH''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byuh_Minus_1 = S.Donor_Retention_Type_Code_Byuh_Minus_1
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byuh_Minus_2
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byuh_Minus_2
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byuh_Minus_2) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh_Minus_2
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-2
+														AND B.New_Inst = ''BYUH''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-2
+												AND C.New_Inst = ''BYUH''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byuh_Minus_2 = S.Donor_Retention_Type_Code_Byuh_Minus_2
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byuh_Minus_3
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byuh_Minus_3
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byuh_Minus_3) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh_Minus_3
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-3
+														AND B.New_Inst = ''BYUH''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-3
+												AND C.New_Inst = ''BYUH''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byuh_Minus_3 = S.Donor_Retention_Type_Code_Byuh_Minus_3
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byuh_Minus_4
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byuh_Minus_4
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byuh_Minus_4) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh_Minus_4
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-4
+														AND B.New_Inst = ''BYUH''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-4
+												AND C.New_Inst = ''BYUH''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byuh_Minus_4 = S.Donor_Retention_Type_Code_Byuh_Minus_4
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Byuh_Minus_5
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Byuh_Minus_5
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Byuh_Minus_5) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Byuh_Minus_5
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-5
+														AND B.New_Inst = ''BYUH''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-5
+												AND C.New_Inst = ''BYUH''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Byuh_Minus_5 = S.Donor_Retention_Type_Code_Byuh_Minus_5
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Ldsbc_Minus_1
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Ldsbc_Minus_1
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Ldsbc_Minus_1) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc_Minus_1
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-1
+														AND B.New_Inst = ''LDSBC''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-1
+												AND C.New_Inst = ''LDSBC''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Ldsbc_Minus_1 = S.Donor_Retention_Type_Code_Ldsbc_Minus_1
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Ldsbc_Minus_2
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Ldsbc_Minus_2
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Ldsbc_Minus_2) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc_Minus_2
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-2
+														AND B.New_Inst = ''LDSBC''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-2
+												AND C.New_Inst = ''LDSBC''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Ldsbc_Minus_2 = S.Donor_Retention_Type_Code_Ldsbc_Minus_2
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Ldsbc_Minus_3
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Ldsbc_Minus_3
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Ldsbc_Minus_3) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc_Minus_3
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-3
+														AND B.New_Inst = ''LDSBC''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-3
+												AND C.New_Inst = ''LDSBC''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Ldsbc_Minus_3 = S.Donor_Retention_Type_Code_Ldsbc_Minus_3
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Ldsbc_Minus_4
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Ldsbc_Minus_4
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Ldsbc_Minus_4) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc_Minus_4
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-4
+														AND B.New_Inst = ''LDSBC''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-4
+												AND C.New_Inst = ''LDSBC''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Ldsbc_Minus_4 = S.Donor_Retention_Type_Code_Ldsbc_Minus_4
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT Donor_Key
+							, Donor_Retention_Type_Code_Ldsbc_Minus_5
+							FROM
+								(SELECT Donor_Key
+									, Donor_Retention_Type_Code_Ldsbc_Minus_5
+									, ROW_NUMBER() OVER(PARTITION BY Donor_Key ORDER BY Donor_Retention_Type_Code_Ldsbc_Minus_5) AS RowNum
+									FROM
+										(SELECT A.Donor_Key
+											, CONVERT(NVARCHAR(2),B.Plus_I5LegacyDonorType) AS Donor_Retention_Type_Code_Ldsbc_Minus_5
+											FROM
+												(SELECT COALESCE(A.Plus_Constituent,A.Plus_Institution) AS Donor_Key
+													, MIN(A.ModifiedOn) AS ModifiedOn -- Earliest Date
+													FROM Ext_Donor_Score A
+														INNER JOIN Ext_Institution B ON A.Plus_Institution = B.New_InstitutionId
+													WHERE 1 = 1
+														AND YEAR(A.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-5
+														AND B.New_Inst = ''LDSBC''
+														AND A.StatusCode = 1 -- Active
+													GROUP BY COALESCE(A.Plus_Constituent,A.Plus_Institution)
+												) A
+												INNER JOIN Ext_Donor_Score B ON A.Donor_Key = COALESCE(B.Plus_Constituent,B.Plus_Institution)
+																					AND A.ModifiedOn = B.ModifiedOn
+												INNER JOIN Ext_Institution C ON B.Plus_Institution = C.New_InstitutionId
+											WHERE 1 = 1
+												AND YEAR(B.Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())-5
+												AND C.New_Inst = ''LDSBC''
+												AND B.StatusCode = 1 -- Active
+										) A
+								) A
+							WHERE 1 = 1
+								AND RowNum = 1
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Retention_Type_Code_Ldsbc_Minus_5 = S.Donor_Retention_Type_Code_Ldsbc_Minus_5
+						;
+		END TRY 
+		BEGIN CATCH
+			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+			SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+			SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+			SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+			SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+			SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Merge_Into_Donor_Dim_2'', @Alpha_Step_Number = ''164X'', @Alpha_Step_Name = ''_Merge_Into_Donor_Dim_2 - Error'', @Alpha_Result = 0
+			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+		END CATCH
 		' -- Attribute_10
-	, ' ' -- Attribute_11
+	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+		' -- Attribute_11
 	, ' ' -- Attribute_12
 	, ' ' -- Attribute_13
 	, ' ' -- Attribute_14
@@ -33139,6 +33987,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, Is_Qualified NVARCHAR(1)
 		, Qualified_On DATE 
 		, Qualified_By NVARCHAR(200)
+		, DonorId NVARCHAR(100)
 		' -- Create_Table
 	, 'Ldsp_Id
 		, Donor_Full_Name
@@ -33188,6 +34037,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, Is_Qualified
 		, Qualified_On 
 		, Qualified_By
+		, DonorId
 		' -- Insert_Fields
 	, ' ' -- From_Statement
 	, ' ' -- Where_Statement
@@ -33252,6 +34102,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				, Is_Qualified
 				, Qualified_On 
 				, Qualified_By
+				, DonorId
 			)
 			SELECT A.Donor_Ldsp_Id AS Ldsp_Id
 				, A.Donor_Name AS Donor_Full_Name
@@ -33301,6 +34152,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				, A.Donor_Is_Qualified AS Is_Qualified
 				, A.Donor_Qualified_On AS Qualified_On 
 				, A.Donor_Qualified_By AS Qualified_By
+				, A.Donor_Key AS DonorId
 				FROM _Donor_Dim A
 					LEFT JOIN _Primary_Contact_Dim B ON A.Donor_Key = B.Donor_Key
 					WHERE 1 = 1

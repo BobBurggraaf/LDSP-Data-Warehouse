@@ -2556,7 +2556,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			' -- Insert_Fields
 		, 'Plus_DonorScoreBase
 			WHERE 1 = 1
-				AND YEAR(Plus_I5LegacyDonorTypeDate) = YEAR(GETDATE())
+				AND YEAR(Plus_I5LegacyDonorTypeDate) >= YEAR(GETDATE())-5
 			' -- From_Statement
 		, ' ' -- Where_Statement
 		, 'Plus_DonorScoreId

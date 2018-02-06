@@ -3100,6 +3100,26 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt MONEY
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt MONEY
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt MONEY
+			, Donor_Retention_Type_Code_Byu_Minus_1 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byu_Minus_2 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byu_Minus_3 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byu_Minus_4 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byu_Minus_5 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_1 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_2 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_3 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_4 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byui_Minus_5 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_1 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_2 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_3 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_4 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Byuh_Minus_5 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_1 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_2 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_3 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_4 NVARCHAR(2)
+			, Donor_Retention_Type_Code_Ldsbc_Minus_5 NVARCHAR(2)
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3421,6 +3441,26 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_3_Amt
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_4_Amt
 			, Donor_Total_Giving_To_Church_Current_Year_Minus_5_Amt
+			, Donor_Retention_Type_Code_Byu_Minus_1
+			, Donor_Retention_Type_Code_Byu_Minus_2
+			, Donor_Retention_Type_Code_Byu_Minus_3
+			, Donor_Retention_Type_Code_Byu_Minus_4
+			, Donor_Retention_Type_Code_Byu_Minus_5
+			, Donor_Retention_Type_Code_Byui_Minus_1
+			, Donor_Retention_Type_Code_Byui_Minus_2
+			, Donor_Retention_Type_Code_Byui_Minus_3
+			, Donor_Retention_Type_Code_Byui_Minus_4
+			, Donor_Retention_Type_Code_Byui_Minus_5
+			, Donor_Retention_Type_Code_Byuh_Minus_1
+			, Donor_Retention_Type_Code_Byuh_Minus_2
+			, Donor_Retention_Type_Code_Byuh_Minus_3
+			, Donor_Retention_Type_Code_Byuh_Minus_4
+			, Donor_Retention_Type_Code_Byuh_Minus_5
+			, Donor_Retention_Type_Code_Ldsbc_Minus_1
+			, Donor_Retention_Type_Code_Ldsbc_Minus_2
+			, Donor_Retention_Type_Code_Ldsbc_Minus_3
+			, Donor_Retention_Type_Code_Ldsbc_Minus_4
+			, Donor_Retention_Type_Code_Ldsbc_Minus_5
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement
@@ -7430,6 +7470,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Is_Qualified NVARCHAR(1)
 			, Qualified_On DATE 
 			, Qualified_By NVARCHAR(200)
+			, DonorId NVARCHAR(100)
 			' -- Create_Table
 		, '	Ldsp_Id
 			, Donor_Full_Name
@@ -7479,6 +7520,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Is_Qualified
 			, Qualified_On 
 			, Qualified_By
+			, DonorId
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

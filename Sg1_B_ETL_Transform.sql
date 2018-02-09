@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1440571
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1448074
    
 ******************************************************************************/
 
@@ -13230,6 +13230,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Retention_Type_Code_Ldsbc_Minus_3 NVARCHAR(2)
 			, Donor_Retention_Type_Code_Ldsbc_Minus_4 NVARCHAR(2)
 			, Donor_Retention_Type_Code_Ldsbc_Minus_5 NVARCHAR(2)
+			, Donor_First_Gift_To_Byu_Amt MONEY
+			, Donor_First_Gift_To_Byui_Amt MONEY
+			, Donor_First_Gift_To_Byuh_Amt MONEY
+			, Donor_First_Gift_To_Ldsbc_Amt MONEY
+			, Donor_First_Gift_To_Church_Amt MONEY
+			, Donor_First_Gift_To_Ldsp_Amt MONEY
 			'
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -13571,6 +13577,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Retention_Type_Code_Ldsbc_Minus_3
 			, Donor_Retention_Type_Code_Ldsbc_Minus_4
 			, Donor_Retention_Type_Code_Ldsbc_Minus_5
+			, Donor_First_Gift_To_Byu_Amt
+			, Donor_First_Gift_To_Byui_Amt
+			, Donor_First_Gift_To_Byuh_Amt
+			, Donor_First_Gift_To_Ldsbc_Amt
+			, Donor_First_Gift_To_Church_Amt
+			, Donor_First_Gift_To_Ldsp_Amt
 			'
 		, ' '
 		, ' '
@@ -14231,7 +14243,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((129 - 1440700)/-1)
+			SET @Barsoom_Base = ((126 - 1448200)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -14583,6 +14595,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 									, Donor_Retention_Type_Code_Ldsbc_Minus_3
 									, Donor_Retention_Type_Code_Ldsbc_Minus_4
 									, Donor_Retention_Type_Code_Ldsbc_Minus_5
+									, Donor_First_Gift_To_Byu_Amt
+									, Donor_First_Gift_To_Byui_Amt
+									, Donor_First_Gift_To_Byuh_Amt
+									, Donor_First_Gift_To_Ldsbc_Amt
+									, Donor_First_Gift_To_Church_Amt
+									, Donor_First_Gift_To_Ldsp_Amt
 									)
 									SELECT DISTINCT A.Donor_Key
 										, COALESCE(A.Activity_Group_Key,0) AS Activity_Group_Key
@@ -14924,6 +14942,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_Retention_Type_Code_Ldsbc_Minus_3
 										, NULL AS Donor_Retention_Type_Code_Ldsbc_Minus_4
 										, NULL AS Donor_Retention_Type_Code_Ldsbc_Minus_5
+										, NULL AS Donor_First_Gift_To_Byu_Amt
+										, NULL AS Donor_First_Gift_To_Byui_Amt
+										, NULL AS Donor_First_Gift_To_Byuh_Amt
+										, NULL AS Donor_First_Gift_To_Ldsbc_Amt
+										, NULL AS Donor_First_Gift_To_Church_Amt
+										, NULL AS Donor_First_Gift_To_Ldsp_Amt
 										FROM OneAccord_Warehouse.dbo._Donor_Pre_Dim A
 											INNER JOIN OneAccord_Warehouse.dbo._Numbered_ContactIds NUM ON A.Donor_Key = NUM.ContactId 
 											LEFT JOIN OneAccord_Warehouse.dbo._Donor_Gender_ B ON A.GenderCode = B.Column_Value
@@ -33916,10 +33940,130 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
 		END CATCH
 		' -- Attribute_10
-	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+	, 'BEGIN TRY
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT A.Donor_Key
+							, MAX(A.Donation_Credit_Amt) AS Donor_First_Gift_To_Byu_Amt
+							FROM _Donation_Fact A
+								INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+								INNER JOIN Ldsp_First_Donation_Date_Byu() C ON A.Donor_Key = C.Donor_Key AND B.New_ReceiptDate = C.Min_Receipt_Date
+								INNER JOIN _Hier_Dim D ON A.Hier_Key = D.Hier_Key
+							WHERE 1 = 1
+								AND A.Plus_SharedCreditType != ''Matching'' -- Not Matching
+								AND A.Plus_Type IN (''Hard'',''Shared'') -- Not Influence 100000001
+								AND D.New_Inst = ''BYU''
+							GROUP BY A.Donor_Key
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Gift_To_Byu_Amt = S.Donor_First_Gift_To_Byu_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT A.Donor_Key
+							, MAX(A.Donation_Credit_Amt) AS Donor_First_Gift_To_Byui_Amt
+							FROM _Donation_Fact A
+								INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+								INNER JOIN Ldsp_First_Donation_Date_Byui() C ON A.Donor_Key = C.Donor_Key AND B.New_ReceiptDate = C.Min_Receipt_Date
+								INNER JOIN _Hier_Dim D ON A.Hier_Key = D.Hier_Key
+							WHERE 1 = 1
+								AND A.Plus_SharedCreditType != ''Matching'' -- Not Matching
+								AND A.Plus_Type IN (''Hard'',''Shared'') -- Not Influence 100000001
+								AND D.New_Inst = ''BYUI''
+							GROUP BY A.Donor_Key
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Gift_To_Byui_Amt = S.Donor_First_Gift_To_Byui_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT A.Donor_Key
+							, MAX(A.Donation_Credit_Amt) AS Donor_First_Gift_To_Byuh_Amt
+							FROM _Donation_Fact A
+								INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+								INNER JOIN Ldsp_First_Donation_Date_Byuh() C ON A.Donor_Key = C.Donor_Key AND B.New_ReceiptDate = C.Min_Receipt_Date
+								INNER JOIN _Hier_Dim D ON A.Hier_Key = D.Hier_Key
+							WHERE 1 = 1
+								AND A.Plus_SharedCreditType != ''Matching'' -- Not Matching
+								AND A.Plus_Type IN (''Hard'',''Shared'') -- Not Influence 100000001
+								AND D.New_Inst = ''BYUH''
+							GROUP BY A.Donor_Key
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Gift_To_Byuh_Amt = S.Donor_First_Gift_To_Byuh_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT A.Donor_Key
+							, MAX(A.Donation_Credit_Amt) AS Donor_First_Gift_To_Ldsbc_Amt
+							FROM _Donation_Fact A
+								INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+								INNER JOIN Ldsp_First_Donation_Date_Ldsbc() C ON A.Donor_Key = C.Donor_Key AND B.New_ReceiptDate = C.Min_Receipt_Date
+								INNER JOIN _Hier_Dim D ON A.Hier_Key = D.Hier_Key
+							WHERE 1 = 1
+								AND A.Plus_SharedCreditType != ''Matching'' -- Not Matching
+								AND A.Plus_Type IN (''Hard'',''Shared'') -- Not Influence 100000001
+								AND D.New_Inst = ''LDSBC''
+							GROUP BY A.Donor_Key
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Gift_To_Ldsbc_Amt = S.Donor_First_Gift_To_Ldsbc_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT A.Donor_Key
+							, MAX(A.Donation_Credit_Amt) AS Donor_First_Gift_To_Church_Amt
+							FROM _Donation_Fact A
+								INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+								INNER JOIN Ldsp_First_Donation_Date_Church() C ON A.Donor_Key = C.Donor_Key AND B.New_ReceiptDate = C.Min_Receipt_Date
+								INNER JOIN _Hier_Dim D ON A.Hier_Key = D.Hier_Key
+							WHERE 1 = 1
+								AND A.Plus_SharedCreditType != ''Matching'' -- Not Matching
+								AND A.Plus_Type IN (''Hard'',''Shared'') -- Not Influence 100000001
+								AND D.New_Inst = ''Church''
+							GROUP BY A.Donor_Key
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Gift_To_Church_Amt = S.Donor_First_Gift_To_Church_Amt
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT A.Donor_Key
+							, MAX(A.Donation_Credit_Amt) AS Donor_First_Gift_To_Ldsp_Amt
+							FROM _Donation_Fact A
+								INNER JOIN _Donation_Dim B ON A.Donation_Key = B.Donation_Key
+								INNER JOIN Ldsp_First_Donation_Date_Ldsp() C ON A.Donor_Key = C.Donor_Key AND B.New_ReceiptDate = C.Min_Receipt_Date
+								INNER JOIN _Hier_Dim D ON A.Hier_Key = D.Hier_Key
+							WHERE 1 = 1
+								AND A.Plus_SharedCreditType != ''Matching'' -- Not Matching
+								AND A.Plus_Type IN (''Hard'',''Shared'') -- Not Influence 100000001
+							GROUP BY A.Donor_Key
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_First_Gift_To_Ldsp_Amt = S.Donor_First_Gift_To_Ldsp_Amt
+						;
+		END TRY 
+		BEGIN CATCH
+			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+			SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+			SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+			SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+			SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+			SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Merge_Into_Donor_Dim_2'', @Alpha_Step_Number = ''164X'', @Alpha_Step_Name = ''_Merge_Into_Donor_Dim_2 - Error'', @Alpha_Result = 0
+			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+		END CATCH 
 		' -- Attribute_11
-	, ' ' -- Attribute_12
-	, ' ' -- Attribute_13
+	, ' 
+		' -- Attribute_12
+	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+		' -- Attribute_13
 	, ' ' -- Attribute_14
 	, ' ' -- Attribute_15
 	, ' ' -- Attribute_16
@@ -33988,6 +34132,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, Qualified_On DATE 
 		, Qualified_By NVARCHAR(200)
 		, DonorId NVARCHAR(100)
+		, First_Gift_To_Byu_Amt MONEY
+		, First_Gift_To_Byui_Amt MONEY
+		, First_Gift_To_Byuh_Amt MONEY
+		, First_Gift_To_Ldsbc_Amt MONEY
+		, First_Gift_To_Church_Amt MONEY
+		, First_Gift_To_Ldsp_Amt MONEY
 		' -- Create_Table
 	, 'Ldsp_Id
 		, Donor_Full_Name
@@ -34038,6 +34188,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, Qualified_On 
 		, Qualified_By
 		, DonorId
+		, First_Gift_To_Byu_Amt
+		, First_Gift_To_Byui_Amt
+		, First_Gift_To_Byuh_Amt
+		, First_Gift_To_Ldsbc_Amt
+		, First_Gift_To_Church_Amt
+		, First_Gift_To_Ldsp_Amt
 		' -- Insert_Fields
 	, ' ' -- From_Statement
 	, ' ' -- Where_Statement
@@ -34103,6 +34259,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				, Qualified_On 
 				, Qualified_By
 				, DonorId
+				, First_Gift_To_Byu_Amt
+				, First_Gift_To_Byui_Amt
+				, First_Gift_To_Byuh_Amt
+				, First_Gift_To_Ldsbc_Amt
+				, First_Gift_To_Church_Amt
+				, First_Gift_To_Ldsp_Amt
 			)
 			SELECT A.Donor_Ldsp_Id AS Ldsp_Id
 				, A.Donor_Name AS Donor_Full_Name
@@ -34153,6 +34315,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				, A.Donor_Qualified_On AS Qualified_On 
 				, A.Donor_Qualified_By AS Qualified_By
 				, A.Donor_Key AS DonorId
+				, A.Donor_First_Gift_To_Byu_Amt AS First_Gift_To_Byu_Amt
+				, A.Donor_First_Gift_To_Byui_Amt AS First_Gift_To_Byui_Amt
+				, A.Donor_First_Gift_To_Byuh_Amt AS First_Gift_To_Byuh_Amt
+				, A.Donor_First_Gift_To_Ldsbc_Amt AS First_Gift_To_Ldsbc_Amt
+				, A.Donor_First_Gift_To_Church_Amt AS First_Gift_To_Church_Amt
+				, A.Donor_First_Gift_To_Ldsp_Amt AS First_Gift_To_Ldsp_Amt
 				FROM _Donor_Dim A
 					LEFT JOIN _Primary_Contact_Dim B ON A.Donor_Key = B.Donor_Key
 					WHERE 1 = 1

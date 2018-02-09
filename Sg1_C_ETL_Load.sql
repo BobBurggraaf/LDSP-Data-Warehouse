@@ -3120,6 +3120,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Retention_Type_Code_Ldsbc_Minus_3 NVARCHAR(2)
 			, Donor_Retention_Type_Code_Ldsbc_Minus_4 NVARCHAR(2)
 			, Donor_Retention_Type_Code_Ldsbc_Minus_5 NVARCHAR(2)
+			, Donor_First_Gift_To_Byu_Amt MONEY
+			, Donor_First_Gift_To_Byui_Amt MONEY
+			, Donor_First_Gift_To_Byuh_Amt MONEY
+			, Donor_First_Gift_To_Ldsbc_Amt MONEY
+			, Donor_First_Gift_To_Church_Amt MONEY
+			, Donor_First_Gift_To_Ldsp_Amt MONEY
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3461,6 +3467,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Retention_Type_Code_Ldsbc_Minus_3
 			, Donor_Retention_Type_Code_Ldsbc_Minus_4
 			, Donor_Retention_Type_Code_Ldsbc_Minus_5
+			, Donor_First_Gift_To_Byu_Amt
+			, Donor_First_Gift_To_Byui_Amt
+			, Donor_First_Gift_To_Byuh_Amt
+			, Donor_First_Gift_To_Ldsbc_Amt
+			, Donor_First_Gift_To_Church_Amt
+			, Donor_First_Gift_To_Ldsp_Amt
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement
@@ -7471,6 +7483,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Qualified_On DATE 
 			, Qualified_By NVARCHAR(200)
 			, DonorId NVARCHAR(100)
+			, First_Gift_To_Byu_Amt MONEY
+			, First_Gift_To_Byui_Amt MONEY
+			, First_Gift_To_Byuh_Amt MONEY
+			, First_Gift_To_Ldsbc_Amt MONEY
+			, First_Gift_To_Church_Amt MONEY
+			, First_Gift_To_Ldsp_Amt MONEY
 			' -- Create_Table
 		, '	Ldsp_Id
 			, Donor_Full_Name
@@ -7521,6 +7539,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Qualified_On 
 			, Qualified_By
 			, DonorId
+			, First_Gift_To_Byu_Amt
+			, First_Gift_To_Byui_Amt
+			, First_Gift_To_Byuh_Amt
+			, First_Gift_To_Ldsbc_Amt
+			, First_Gift_To_Church_Amt
+			, First_Gift_To_Ldsp_Amt
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

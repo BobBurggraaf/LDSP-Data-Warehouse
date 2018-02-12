@@ -3126,6 +3126,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_To_Ldsbc_Amt MONEY
 			, Donor_First_Gift_To_Church_Amt MONEY
 			, Donor_First_Gift_To_Ldsp_Amt MONEY
+			, Donor_First_Gift_Date_Byu DATE
+			, Donor_First_Gift_Date_Byui DATE
+			, Donor_First_Gift_Date_Byuh DATE
+			, Donor_First_Gift_Date_Ldsbc DATE
+			, Donor_First_Gift_Date_Church DATE
+			, Donor_First_Gift_Date_Ldsp DATE
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3473,6 +3479,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_To_Ldsbc_Amt
 			, Donor_First_Gift_To_Church_Amt
 			, Donor_First_Gift_To_Ldsp_Amt
+			, Donor_First_Gift_Date_Byu
+			, Donor_First_Gift_Date_Byui
+			, Donor_First_Gift_Date_Byuh
+			, Donor_First_Gift_Date_Ldsbc
+			, Donor_First_Gift_Date_Church
+			, Donor_First_Gift_Date_Ldsp
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement
@@ -7489,6 +7501,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, First_Gift_To_Ldsbc_Amt MONEY
 			, First_Gift_To_Church_Amt MONEY
 			, First_Gift_To_Ldsp_Amt MONEY
+			, First_Gift_Date_Byu DATE
+			, First_Gift_Date_Byui DATE
+			, First_Gift_Date_Byuh DATE
+			, First_Gift_Date_Ldsbc DATE
+			, First_Gift_Date_Church DATE
+			, First_Gift_Date_Ldsp DATE
 			' -- Create_Table
 		, '	Ldsp_Id
 			, Donor_Full_Name
@@ -7545,6 +7563,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, First_Gift_To_Ldsbc_Amt
 			, First_Gift_To_Church_Amt
 			, First_Gift_To_Ldsp_Amt
+			, First_Gift_Date_Byu
+			, First_Gift_Date_Byui
+			, First_Gift_Date_Byuh
+			, First_Gift_Date_Ldsbc
+			, First_Gift_Date_Church
+			, First_Gift_Date_Ldsp
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

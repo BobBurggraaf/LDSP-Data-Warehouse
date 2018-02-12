@@ -12,7 +12,7 @@
 	Set in the usp_Ldsp_Trans_Load
 	Line: 57
 	DECLARE @Barsoom_Base BIGINT
-		SET @Barsoom_Base = ((126 - 1448200)/-1)
+		SET @Barsoom_Base = ((130 - 1454700)/-1)
 	EXEC usp_Barsoom_usp @Barsoom_Cnt = @Barsoom_Base
 	
 	SELECT * 

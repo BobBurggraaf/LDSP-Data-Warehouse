@@ -1846,6 +1846,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Relationship_Last_Name NVARCHAR(50)
 			, Relationship_Birth_Date DATE
 			, Relationship_Age INT
+			, Relationship_Middle_Name NVARCHAR(50)
+			, Relationship_Birth_Name NVARCHAR(100)
 			' -- Create_Table 
 		, 'ContactId
 			, Connection_Key
@@ -1861,6 +1863,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Relationship_Last_Name
 			, Relationship_Birth_Date
 			, Relationship_Age
+			, Relationship_Middle_Name
+			, Relationship_Birth_Name
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement
@@ -3134,6 +3138,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_Date_Ldsbc DATE
 			, Donor_First_Gift_Date_Church DATE
 			, Donor_First_Gift_Date_Ldsp DATE
+			, Donor_Spouse_Middle_Name NVARCHAR(50)
+			, Donor_Spouse_Birth_Name NVARCHAR(100)
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3487,6 +3493,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_Date_Ldsbc
 			, Donor_First_Gift_Date_Church
 			, Donor_First_Gift_Date_Ldsp
+			, Donor_Spouse_Middle_Name
+			, Donor_Spouse_Birth_Name
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

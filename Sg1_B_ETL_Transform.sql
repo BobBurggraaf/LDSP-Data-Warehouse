@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1454779
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1455991
    
 ******************************************************************************/
 
@@ -10650,6 +10650,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Relationship_Last_Name NVARCHAR(50)
 			, Relationship_Birth_Date DATE
 			, Relationship_Age INT
+			, Relationship_Middle_Name NVARCHAR(50)
+			, Relationship_Birth_Name NVARCHAR(100)
 			' -- Create_Table 
 		, 'ContactId
 			, Connection_Key
@@ -10665,6 +10667,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Relationship_Last_Name
 			, Relationship_Birth_Date
 			, Relationship_Age
+			, Relationship_Middle_Name
+			, Relationship_Birth_Name
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement
@@ -10769,6 +10773,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								, A.Relationship_Last_Name
 								, A.Relationship_Birth_Date
 								, D.Relationship_Age
+								, A.Relationship_Middle_Name
+								, A.Relationship_Birth_Name
 								FROM
 									(SELECT DISTINCT              
 										A.Record1Id AS ContactId
@@ -10781,6 +10787,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, E.LastName AS Relationship_Last_Name
 										, E.New_BirthDate AS Relationship_Birth_Date
 										, NULL AS Relationship_Age
+										, E.MiddleName AS Relationship_Middle_Name
+										, E.New_BirthName AS Relationship_Birth_Name
 										FROM Ext_Connection A
 											INNER JOIN Ext_Connection_Role B ON A.Record2RoleId = B.ConnectionRoleId 
 											LEFT JOIN Ext_Contact D ON A.Record1Id = D.ContactId 
@@ -10807,6 +10815,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, D.LastName AS Relationship_Last_Name
 										, D.New_BirthDate AS Relationship_Birth_Date
 										, NULL AS Relationship_Age
+										, D.MiddleName AS Relationship_Middle_Name
+										, D.New_BirthName AS Relationship_Birth_Name
 										FROM Ext_Connection A
 											INNER JOIN Ext_Connection_Role C ON A.Record1RoleId = C.ConnectionRoleId
 											LEFT JOIN Ext_Contact D ON A.Record1Id = D.ContactId 
@@ -10903,6 +10913,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 						, Relationship_Last_Name
 						, Relationship_Birth_Date
 						, Relationship_Age
+						, Relationship_Middle_Name
+						, Relationship_Birth_Name
 						)
 						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
 							, A.Connection_Key
@@ -10923,6 +10935,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										AND SUBSTRING(Relationship_Birth_Date,7,2) IN (''19'',''20'')
 										THEN CONVERT(VARCHAR(10),A.Relationship_Birth_Date,101) ELSE NULL END AS Relationship_Birth_Date
 							, A.Relationship_Age 
+							, A.Relationship_Middle_Name
+							, A.Relationship_Birth_Name
 							FROM #Connection_Temp_1 A
 								LEFT JOIN #Connection_Temp_2 B ON A.ContactId = B.ContactId
 					INSERT INTO _Connection_Bridge --> HARD CODED <--
@@ -13247,6 +13261,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_Date_Ldsbc DATE
 			, Donor_First_Gift_Date_Church DATE
 			, Donor_First_Gift_Date_Ldsp DATE
+			, Donor_Spouse_Middle_Name NVARCHAR(50)
+			, Donor_Spouse_Birth_Name NVARCHAR(100)
 			'
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -13600,6 +13616,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_Date_Ldsbc
 			, Donor_First_Gift_Date_Church
 			, Donor_First_Gift_Date_Ldsp
+			, Donor_Spouse_Middle_Name
+			, Donor_Spouse_Birth_Name
 			'
 		, ' '
 		, ' '
@@ -14260,7 +14278,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((121 - 1454900)/-1)
+			SET @Barsoom_Base = ((109 - 1456100)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -14624,6 +14642,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 									, Donor_First_Gift_Date_Ldsbc
 									, Donor_First_Gift_Date_Church
 									, Donor_First_Gift_Date_Ldsp
+									, Donor_Spouse_Middle_Name
+									, Donor_Spouse_Birth_Name
 									)
 									SELECT DISTINCT A.Donor_Key
 										, COALESCE(A.Activity_Group_Key,0) AS Activity_Group_Key
@@ -14977,6 +14997,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_First_Gift_Date_Ldsbc
 										, NULL AS Donor_First_Gift_Date_Church
 										, NULL AS Donor_First_Gift_Date_Ldsp
+										, AA.Spouse_Middle_Name AS Donor_Spouse_Middle_Name
+										, AA.Spouse_Birth_Name AS Donor_Spouse_Birth_Name
 										FROM OneAccord_Warehouse.dbo._Donor_Pre_Dim A
 											INNER JOIN OneAccord_Warehouse.dbo._Numbered_ContactIds NUM ON A.Donor_Key = NUM.ContactId 
 											LEFT JOIN OneAccord_Warehouse.dbo._Donor_Gender_ B ON A.GenderCode = B.Column_Value
@@ -15008,6 +15030,8 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 													, MAX(CASE WHEN _Connection_Dim.Relationship = ''Spouse'' THEN Relationship_Last_Name ELSE NULL END) AS Spouse_Last_Name
 													, MAX(CASE WHEN _Connection_Dim.Relationship = ''Spouse'' THEN Relationship_Birth_Date ELSE NULL END) AS Spouse_Birth_Date
 													, MAX(CASE WHEN _Connection_Dim.Relationship = ''Spouse'' THEN Relationship_Age ELSE NULL END) AS Spouse_Age
+													, MAX(CASE WHEN _Connection_Dim.Relationship = ''Spouse'' THEN Relationship_Middle_Name ELSE NULL END) AS Spouse_Middle_Name
+													, MAX(CASE WHEN _Connection_Dim.Relationship = ''Spouse'' THEN Relationship_Birth_Name ELSE NULL END) AS Spouse_Birth_Name
 													FROM OneAccord_Warehouse.dbo._Connection_Dim
 													GROUP BY ContactId                          
 												) AA ON A.Donor_Key = AA.ContactId
@@ -18881,7 +18905,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				INSERT INTO [OneAccord_Warehouse].[dbo]._Psa_Bridge
 					VALUES(NULL,0,0);
 				INSERT INTO [OneAccord_Warehouse].[dbo]._Connection_Dim
-					VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+					VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 				INSERT INTO [OneAccord_Warehouse].[dbo]._Connection_Bridge
 					VALUES(NULL,0,0);
 				INSERT INTO [OneAccord_Warehouse].[dbo]._Id_Dim

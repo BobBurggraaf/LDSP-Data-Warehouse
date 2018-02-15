@@ -457,178 +457,381 @@ IF @Step_Date != @Todays_Date OR @Step_Date IS NULL
 				SET @Wait_Time_3 = '01:00:00'
 
 				WAITFOR DELAY @Wait_Time_3
+				
 
-					DECLARE @Main_Total_Loop_Num_3 INT
-					SELECT @Main_Total_Loop_Num_3 = (
-						SELECT MAX(Fields_Key) AS Max_Field
-								FROM CREATE_TRANS_LOAD_TABLES
-								WHERE 1 = 1
-									AND Active = 1
-								
-						)
-					DECLARE @Main_LOOP_NUM_3 INT
-					SET @Main_LOOP_NUM_3 = 1
-					WHILE  @Main_LOOP_NUM_3 <= @Main_Total_Loop_Num_3 
-						BEGIN
-						
-							DECLARE @IsActive_3 INT
-							SELECT @IsActive_3 = (
-								SELECT Active 
+				DECLARE @Todays_Date_3 DATE
+				SET @Todays_Date_3 = GETDATE()
+
+				DECLARE @Table_Name_Check_3 NVARCHAR(100)
+				SET @Table_Name_Check_3 = 'View_Liaison_Initiative'
+				
+				DECLARE @Step_Date_3 DATE
+					SELECT @Step_Date_3 = (
+						SELECT Alpha_DateTime
+							FROM [MSSQL12336\S01].OneAccord_Warehouse.dbo.Alpha_Table_2
+							WHERE 1 = 1
+								AND Alpha_Step_Name = 'Stats'
+								AND Alpha_Stage = @Table_Name_Check_3				
+					)
+					
+					
+				IF @Step_Date_3 = @Todays_Date_3
+					BEGIN
+
+						DECLARE @Main_Total_Loop_Num_3 INT
+						SELECT @Main_Total_Loop_Num_3 = (
+							SELECT MAX(Fields_Key) AS Max_Field
 									FROM CREATE_TRANS_LOAD_TABLES
 									WHERE 1 = 1
-										AND Fields_Key = @Main_LOOP_NUM_3
-								)
-								
-							DECLARE @Table_Name_By_Loop_3 NVARCHAR(200)
-							SELECT @Table_Name_By_Loop_3 = (
-								SELECT Table_Name
-									FROM CREATE_TRANS_LOAD_TABLES
-									WHERE 1 = 1
-										AND Fields_Key = @Main_LOOP_NUM_3
-								)
-								
-							IF @IsActive_3 = 1
-								BEGIN	
-						
-									BEGIN TRY
+										AND Active = 1
 									
-									-- -----------------------------
-									-- Create Table
-									-- -----------------------------
+							)
+						DECLARE @Main_LOOP_NUM_3 INT
+						SET @Main_LOOP_NUM_3 = 1
+						WHILE  @Main_LOOP_NUM_3 <= @Main_Total_Loop_Num_3 
+							BEGIN
+							
+								DECLARE @IsActive_3 INT
+								SELECT @IsActive_3 = (
+									SELECT Active 
+										FROM CREATE_TRANS_LOAD_TABLES
+										WHERE 1 = 1
+											AND Fields_Key = @Main_LOOP_NUM_3
+									)
 									
-										DECLARE @TABLE_NAME_3 VARCHAR(100)
-										DECLARE @CREATE_FIELDS_3 VARCHAR(MAX)
-										DECLARE @INSERT_FIELDS_3 VARCHAR(MAX)
-										DECLARE @SQL_1_3 VARCHAR(MAX)
-										DECLARE @SQL_2_3 VARCHAR(MAX)
-
-										SELECT @TABLE_NAME_3 = (SELECT Table_Name FROM OneAccord_Warehouse.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
-										SELECT @CREATE_FIELDS_3 = (SELECT Create_Fields FROM OneAccord_Warehouse.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
-										SELECT @INSERT_FIELDS_3 = (SELECT Insert_Fields FROM OneAccord_Warehouse.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
-
-										EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0A', @Alpha_Step_Name = 'Table Creation - Begin', @Alpha_Result = 1;
-
-										SET @SQL_2_3 = ' ''OneAccord_Warehouse.dbo.' + @TABLE_NAME_3 + ''', ''U'' '
-										SET @SQL_1_3 = '
-											IF OBJECT_ID(' + @SQL_2_3 + ') IS NOT NULL
-											DROP TABLE OneAccord_Warehouse.dbo.' + @TABLE_NAME_3 + '
-											
-											CREATE TABLE OneAccord_Warehouse.dbo.' + @TABLE_NAME_3 + '(' + @CREATE_FIELDS_3 + ')'
+								DECLARE @Table_Name_By_Loop_3 NVARCHAR(200)
+								SELECT @Table_Name_By_Loop_3 = (
+									SELECT Table_Name
+										FROM CREATE_TRANS_LOAD_TABLES
+										WHERE 1 = 1
+											AND Fields_Key = @Main_LOOP_NUM_3
+									)
+									
+								IF @IsActive_3 = 1
+									BEGIN	
+							
+										BEGIN TRY
 										
-										EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0B', @Alpha_Step_Name = 'Table Creation - Query', @Alpha_Query = @SQL_1_3, @Alpha_Result = 1;
+										-- -----------------------------
+										-- Create Table
+										-- -----------------------------
 										
-										EXEC(@SQL_1_3)
+											DECLARE @TABLE_NAME_3 VARCHAR(100)
+											DECLARE @CREATE_FIELDS_3 VARCHAR(MAX)
+											DECLARE @INSERT_FIELDS_3 VARCHAR(MAX)
+											DECLARE @SQL_1_3 VARCHAR(MAX)
+											DECLARE @SQL_2_3 VARCHAR(MAX)
 
-										EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0C', @Alpha_Step_Name = 'Table Creation - End', @Alpha_Result = 1;
+											SELECT @TABLE_NAME_3 = (SELECT Table_Name FROM OneAccord_Warehouse.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
+											SELECT @CREATE_FIELDS_3 = (SELECT Create_Fields FROM OneAccord_Warehouse.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
+											SELECT @INSERT_FIELDS_3 = (SELECT Insert_Fields FROM OneAccord_Warehouse.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_3);
 
+											EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0A', @Alpha_Step_Name = 'Table Creation - Begin', @Alpha_Result = 1;
 
-									END TRY	
-									BEGIN CATCH
-										
-										DECLARE @ERROR_NUMBER_3 INT
-										DECLARE @ERROR_SEVERITY_3 INT
-										DECLARE @ERROR_STATE_3 INT
-										DECLARE @ERROR_PROCEDURE_3 NVARCHAR(500)
-										DECLARE @ERROR_LINE_3 INT
-										DECLARE @ERROR_MESSAGE_3 NVARCHAR(MAX)
-
-										SELECT @ERROR_NUMBER_3 = (SELECT ERROR_NUMBER())
-										SELECT @ERROR_SEVERITY_3 = (SELECT ERROR_SEVERITY())
-										SELECT @ERROR_STATE_3 = (SELECT ERROR_STATE())
-										SELECT @ERROR_PROCEDURE_3 = (SELECT ERROR_PROCEDURE())
-										SELECT @ERROR_LINE_3 = (SELECT ERROR_LINE())
-										SELECT @ERROR_MESSAGE_3 = (SELECT ERROR_MESSAGE())
-
-										EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0X', @Alpha_Step_Name = 'Table Creation - Error', @Alpha_Result = 0
-										, @ErrorNumber = @ERROR_NUMBER_3, @ErrorSeverity = @ERROR_SEVERITY_3, @ErrorState = @ERROR_STATE_3, @ErrorProcedure = @ERROR_PROCEDURE_3, @ErrorLine = @ERROR_LINE_3, @ErrorMessage = @ERROR_MESSAGE_3;
-										
-									END CATCH
-
-									DECLARE @SQL_ATTRIBUTE1_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE2_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE3_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE4_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE5_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE6_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE7_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE8_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE9_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE10_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE11_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE12_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE13_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE14_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE15_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE16_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE17_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE18_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE19_3 NVARCHAR(MAX);
-									DECLARE @SQL_ATTRIBUTE20_3 NVARCHAR(MAX);
-
-									SELECT @SQL_ATTRIBUTE1_3 = (SELECT ATTRIBUTE_1 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE2_3 = (SELECT ATTRIBUTE_2 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE3_3 = (SELECT ATTRIBUTE_3 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE4_3 = (SELECT ATTRIBUTE_4 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE5_3 = (SELECT ATTRIBUTE_5 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE6_3 = (SELECT ATTRIBUTE_6 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE7_3 = (SELECT ATTRIBUTE_7 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE8_3 = (SELECT ATTRIBUTE_8 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE9_3 = (SELECT ATTRIBUTE_9 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE10_3 = (SELECT ATTRIBUTE_10 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE11_3 = (SELECT ATTRIBUTE_11 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE12_3 = (SELECT ATTRIBUTE_12 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);	
-									SELECT @SQL_ATTRIBUTE13_3 = (SELECT ATTRIBUTE_13 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);	
-									SELECT @SQL_ATTRIBUTE14_3 = (SELECT ATTRIBUTE_14 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE15_3 = (SELECT ATTRIBUTE_15 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE16_3 = (SELECT ATTRIBUTE_16 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);	
-									SELECT @SQL_ATTRIBUTE17_3 = (SELECT ATTRIBUTE_17 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE18_3 = (SELECT ATTRIBUTE_18 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);	
-									SELECT @SQL_ATTRIBUTE19_3 = (SELECT ATTRIBUTE_19 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-									SELECT @SQL_ATTRIBUTE20_3 = (SELECT ATTRIBUTE_20 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
-
-
-									EXEC(@SQL_ATTRIBUTE1_3 + ' ' + @SQL_ATTRIBUTE2_3 + ' ' + @SQL_ATTRIBUTE3_3 + ' ' + 
-										@SQL_ATTRIBUTE4_3 + ' ' + @SQL_ATTRIBUTE5_3 + ' ' + @SQL_ATTRIBUTE6_3 + ' ' + 
-										@SQL_ATTRIBUTE7_3 + ' ' + @SQL_ATTRIBUTE8_3 + ' ' + @SQL_ATTRIBUTE9_3 + ' ' + 
-										@SQL_ATTRIBUTE10_3 + ' ' + @SQL_ATTRIBUTE11_3 + ' ' + @SQL_ATTRIBUTE12_3 + ' ' + @SQL_ATTRIBUTE13_3
-										)
-									EXEC(@SQL_ATTRIBUTE14_3)
-									EXEC(@SQL_ATTRIBUTE15_3)
-									EXEC(@SQL_ATTRIBUTE16_3)
-									EXEC(@SQL_ATTRIBUTE17_3)
-									EXEC(@SQL_ATTRIBUTE18_3)
-									EXEC(@SQL_ATTRIBUTE19_3)
-									EXEC(@SQL_ATTRIBUTE20_3)
-
-										
-											
-									DECLARE @BEG_TIME4_3 DATETIME
-									DECLARE @END_TIME4_3 DATETIME
-									DECLARE @DURATION4_3 INT
-									DECLARE @RECORD_CNT4_3 INT
-									DECLARE @SQL_4B_3 VARCHAR(MAX)
-									DECLARE @SQL_4C_3 VARCHAR(MAX)
-									DECLARE @SQL_4D_3 VARCHAR(MAX)
-									DECLARE @SQL_4E_3 VARCHAR(MAX)
-											
-									DECLARE @RECORD_CNT4A_3 NVARCHAR(MAX) = N'SELECT @RECORD_CNT4_3 = (SELECT COUNT(*) FROM ' + @TABLE_NAME_3 + ')'
-									EXEC sp_executesql @RECORD_CNT4A_3, N'@RECORD_CNT4_3 INT OUT', @RECORD_CNT4_3 OUT
-											
-									DECLARE @BEG_TIME4A_3 NVARCHAR(MAX) = N'SELECT @BEG_TIME4_3 = (SELECT Alpha_DateTime FROM Alpha_Table_3 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_3 + ''' AND RIGHT(Alpha_Step_Number,1) = ''A'')'
-									EXEC sp_executesql @BEG_TIME4A_3, N'@BEG_TIME4_3 DATETIME OUT', @BEG_TIME4_3 OUT
-
-									DECLARE @END_TIME4A_3 NVARCHAR(MAX) = N'SELECT @END_TIME4_3 = (SELECT Alpha_DateTime FROM Alpha_Table_3 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_3 + ''' AND RIGHT(Alpha_Step_Number,1) = ''H'')'
-									EXEC sp_executesql @END_TIME4A_3, N'@END_TIME4_3 DATETIME OUT', @END_TIME4_3 OUT
-
-									SET @DURATION4_3 = DATEDIFF(SECOND,@BEG_TIME4_3,@END_TIME4_3)
-										 
+											SET @SQL_2_3 = ' ''OneAccord_Warehouse.dbo.' + @TABLE_NAME_3 + ''', ''U'' '
+											SET @SQL_1_3 = '
+												IF OBJECT_ID(' + @SQL_2_3 + ') IS NOT NULL
+												DROP TABLE OneAccord_Warehouse.dbo.' + @TABLE_NAME_3 + '
 												
-									EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0Z', @Alpha_Step_Name = 'Stats', @Alpha_Begin_Time = @BEG_TIME4_3, @Alpha_End_Time = @END_TIME4_3, @Alpha_Duration_In_Seconds = @DURATION4_3, @Alpha_Count = @RECORD_CNT4_3, @Alpha_Result = 1;
+												CREATE TABLE OneAccord_Warehouse.dbo.' + @TABLE_NAME_3 + '(' + @CREATE_FIELDS_3 + ')'
+											
+											EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0B', @Alpha_Step_Name = 'Table Creation - Query', @Alpha_Query = @SQL_1_3, @Alpha_Result = 1;
+											
+											EXEC(@SQL_1_3)
 
-								END
-							SET @Main_LOOP_NUM_3 = @Main_LOOP_NUM_3 + 1	
-						END
-					SET @Main_LOOP_NUM_3 = 0
+											EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0C', @Alpha_Step_Name = 'Table Creation - End', @Alpha_Result = 1;
+
+
+										END TRY	
+										BEGIN CATCH
+											
+											DECLARE @ERROR_NUMBER_3 INT
+											DECLARE @ERROR_SEVERITY_3 INT
+											DECLARE @ERROR_STATE_3 INT
+											DECLARE @ERROR_PROCEDURE_3 NVARCHAR(500)
+											DECLARE @ERROR_LINE_3 INT
+											DECLARE @ERROR_MESSAGE_3 NVARCHAR(MAX)
+
+											SELECT @ERROR_NUMBER_3 = (SELECT ERROR_NUMBER())
+											SELECT @ERROR_SEVERITY_3 = (SELECT ERROR_SEVERITY())
+											SELECT @ERROR_STATE_3 = (SELECT ERROR_STATE())
+											SELECT @ERROR_PROCEDURE_3 = (SELECT ERROR_PROCEDURE())
+											SELECT @ERROR_LINE_3 = (SELECT ERROR_LINE())
+											SELECT @ERROR_MESSAGE_3 = (SELECT ERROR_MESSAGE())
+
+											EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0X', @Alpha_Step_Name = 'Table Creation - Error', @Alpha_Result = 0
+											, @ErrorNumber = @ERROR_NUMBER_3, @ErrorSeverity = @ERROR_SEVERITY_3, @ErrorState = @ERROR_STATE_3, @ErrorProcedure = @ERROR_PROCEDURE_3, @ErrorLine = @ERROR_LINE_3, @ErrorMessage = @ERROR_MESSAGE_3;
+											
+										END CATCH
+
+										DECLARE @SQL_ATTRIBUTE1_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE2_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE3_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE4_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE5_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE6_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE7_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE8_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE9_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE10_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE11_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE12_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE13_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE14_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE15_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE16_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE17_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE18_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE19_3 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE20_3 NVARCHAR(MAX);
+
+										SELECT @SQL_ATTRIBUTE1_3 = (SELECT ATTRIBUTE_1 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE2_3 = (SELECT ATTRIBUTE_2 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE3_3 = (SELECT ATTRIBUTE_3 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE4_3 = (SELECT ATTRIBUTE_4 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE5_3 = (SELECT ATTRIBUTE_5 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE6_3 = (SELECT ATTRIBUTE_6 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE7_3 = (SELECT ATTRIBUTE_7 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE8_3 = (SELECT ATTRIBUTE_8 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE9_3 = (SELECT ATTRIBUTE_9 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE10_3 = (SELECT ATTRIBUTE_10 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE11_3 = (SELECT ATTRIBUTE_11 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE12_3 = (SELECT ATTRIBUTE_12 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);	
+										SELECT @SQL_ATTRIBUTE13_3 = (SELECT ATTRIBUTE_13 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);	
+										SELECT @SQL_ATTRIBUTE14_3 = (SELECT ATTRIBUTE_14 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE15_3 = (SELECT ATTRIBUTE_15 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE16_3 = (SELECT ATTRIBUTE_16 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);	
+										SELECT @SQL_ATTRIBUTE17_3 = (SELECT ATTRIBUTE_17 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE18_3 = (SELECT ATTRIBUTE_18 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);	
+										SELECT @SQL_ATTRIBUTE19_3 = (SELECT ATTRIBUTE_19 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+										SELECT @SQL_ATTRIBUTE20_3 = (SELECT ATTRIBUTE_20 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_3);
+
+
+										EXEC(@SQL_ATTRIBUTE1_3 + ' ' + @SQL_ATTRIBUTE2_3 + ' ' + @SQL_ATTRIBUTE3_3 + ' ' + 
+											@SQL_ATTRIBUTE4_3 + ' ' + @SQL_ATTRIBUTE5_3 + ' ' + @SQL_ATTRIBUTE6_3 + ' ' + 
+											@SQL_ATTRIBUTE7_3 + ' ' + @SQL_ATTRIBUTE8_3 + ' ' + @SQL_ATTRIBUTE9_3 + ' ' + 
+											@SQL_ATTRIBUTE10_3 + ' ' + @SQL_ATTRIBUTE11_3 + ' ' + @SQL_ATTRIBUTE12_3 + ' ' + @SQL_ATTRIBUTE13_3
+											)
+										EXEC(@SQL_ATTRIBUTE14_3)
+										EXEC(@SQL_ATTRIBUTE15_3)
+										EXEC(@SQL_ATTRIBUTE16_3)
+										EXEC(@SQL_ATTRIBUTE17_3)
+										EXEC(@SQL_ATTRIBUTE18_3)
+										EXEC(@SQL_ATTRIBUTE19_3)
+										EXEC(@SQL_ATTRIBUTE20_3)
+
+											
+												
+										DECLARE @BEG_TIME4_3 DATETIME
+										DECLARE @END_TIME4_3 DATETIME
+										DECLARE @DURATION4_3 INT
+										DECLARE @RECORD_CNT4_3 INT
+										DECLARE @SQL_4B_3 VARCHAR(MAX)
+										DECLARE @SQL_4C_3 VARCHAR(MAX)
+										DECLARE @SQL_4D_3 VARCHAR(MAX)
+										DECLARE @SQL_4E_3 VARCHAR(MAX)
+												
+										DECLARE @RECORD_CNT4A_3 NVARCHAR(MAX) = N'SELECT @RECORD_CNT4_3 = (SELECT COUNT(*) FROM ' + @TABLE_NAME_3 + ')'
+										EXEC sp_executesql @RECORD_CNT4A_3, N'@RECORD_CNT4_3 INT OUT', @RECORD_CNT4_3 OUT
+												
+										DECLARE @BEG_TIME4A_3 NVARCHAR(MAX) = N'SELECT @BEG_TIME4_3 = (SELECT Alpha_DateTime FROM Alpha_Table_3 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_3 + ''' AND RIGHT(Alpha_Step_Number,1) = ''A'')'
+										EXEC sp_executesql @BEG_TIME4A_3, N'@BEG_TIME4_3 DATETIME OUT', @BEG_TIME4_3 OUT
+
+										DECLARE @END_TIME4A_3 NVARCHAR(MAX) = N'SELECT @END_TIME4_3 = (SELECT Alpha_DateTime FROM Alpha_Table_3 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_3 + ''' AND RIGHT(Alpha_Step_Number,1) = ''H'')'
+										EXEC sp_executesql @END_TIME4A_3, N'@END_TIME4_3 DATETIME OUT', @END_TIME4_3 OUT
+
+										SET @DURATION4_3 = DATEDIFF(SECOND,@BEG_TIME4_3,@END_TIME4_3)
+											 
+													
+										EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_3, @Alpha_Step_Number = '0Z', @Alpha_Step_Name = 'Stats', @Alpha_Begin_Time = @BEG_TIME4_3, @Alpha_End_Time = @END_TIME4_3, @Alpha_Duration_In_Seconds = @DURATION4_3, @Alpha_Count = @RECORD_CNT4_3, @Alpha_Result = 1;
+
+									END
+								SET @Main_LOOP_NUM_3 = @Main_LOOP_NUM_3 + 1	
+							END
+						SET @Main_LOOP_NUM_3 = 0
+					END
+					
+				IF @Step_Date_3 != @Todays_Date_3 OR @Step_Date_3 IS NULL
+					BEGIN
+					
+						DECLARE @Wait_Time_4 NVARCHAR(10)
+						SET @Wait_Time_4 = '00:40:00'
+
+						WAITFOR DELAY @Wait_Time_4
+						
+						
+						DECLARE @Main_Total_Loop_Num_4 INT
+						SELECT @Main_Total_Loop_Num_4 = (
+							SELECT MAX(Fields_Key) AS Max_Field
+									FROM CREATE_TRANS_LOAD_TABLES
+									WHERE 1 = 1
+										AND Active = 1
+									
+							)
+						DECLARE @Main_LOOP_NUM_4 INT
+						SET @Main_LOOP_NUM_4 = 1
+						WHILE  @Main_LOOP_NUM_4 <= @Main_Total_Loop_Num_4 
+							BEGIN
+							
+								DECLARE @IsActive_4 INT
+								SELECT @IsActive_4 = (
+									SELECT Active 
+										FROM CREATE_TRANS_LOAD_TABLES
+										WHERE 1 = 1
+											AND Fields_Key = @Main_LOOP_NUM_4
+									)
+									
+								DECLARE @Table_Name_By_Loop_4 NVARCHAR(200)
+								SELECT @Table_Name_By_Loop_4 = (
+									SELECT Table_Name
+										FROM CREATE_TRANS_LOAD_TABLES
+										WHERE 1 = 1
+											AND Fields_Key = @Main_LOOP_NUM_4
+									)
+									
+								IF @IsActive_4 = 1
+									BEGIN	
+							
+										BEGIN TRY
+										
+										-- -----------------------------
+										-- Create Table
+										-- -----------------------------
+										
+											DECLARE @TABLE_NAME_4 VARCHAR(100)
+											DECLARE @CREATE_FIELDS_4 VARCHAR(MAX)
+											DECLARE @INSERT_FIELDS_4 VARCHAR(MAX)
+											DECLARE @SQL_1_4 VARCHAR(MAX)
+											DECLARE @SQL_2_4 VARCHAR(MAX)
+
+											SELECT @TABLE_NAME_4 = (SELECT Table_Name FROM OneAccord_Warehouse.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_4);
+											SELECT @CREATE_FIELDS_4 = (SELECT Create_Fields FROM OneAccord_Warehouse.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_4);
+											SELECT @INSERT_FIELDS_4 = (SELECT Insert_Fields FROM OneAccord_Warehouse.dbo.CREATE_TRANS_LOAD_TABLES WHERE Active = 1 AND Fields_Key = @Main_LOOP_NUM_4);
+
+											EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_4, @Alpha_Step_Number = '0A', @Alpha_Step_Name = 'Table Creation - Begin', @Alpha_Result = 1;
+
+											SET @SQL_2_4 = ' ''OneAccord_Warehouse.dbo.' + @TABLE_NAME_4 + ''', ''U'' '
+											SET @SQL_1_4 = '
+												IF OBJECT_ID(' + @SQL_2_4 + ') IS NOT NULL
+												DROP TABLE OneAccord_Warehouse.dbo.' + @TABLE_NAME_4 + '
+												
+												CREATE TABLE OneAccord_Warehouse.dbo.' + @TABLE_NAME_4 + '(' + @CREATE_FIELDS_4 + ')'
+											
+											EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_4, @Alpha_Step_Number = '0B', @Alpha_Step_Name = 'Table Creation - Query', @Alpha_Query = @SQL_1_4, @Alpha_Result = 1;
+											
+											EXEC(@SQL_1_4)
+
+											EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_4, @Alpha_Step_Number = '0C', @Alpha_Step_Name = 'Table Creation - End', @Alpha_Result = 1;
+
+
+										END TRY	
+										BEGIN CATCH
+											
+											DECLARE @ERROR_NUMBER_4 INT
+											DECLARE @ERROR_SEVERITY_4 INT
+											DECLARE @ERROR_STATE_4 INT
+											DECLARE @ERROR_PROCEDURE_4 NVARCHAR(500)
+											DECLARE @ERROR_LINE_4 INT
+											DECLARE @ERROR_MESSAGE_4 NVARCHAR(MAX)
+
+											SELECT @ERROR_NUMBER_4 = (SELECT ERROR_NUMBER())
+											SELECT @ERROR_SEVERITY_4 = (SELECT ERROR_SEVERITY())
+											SELECT @ERROR_STATE_4 = (SELECT ERROR_STATE())
+											SELECT @ERROR_PROCEDURE_4 = (SELECT ERROR_PROCEDURE())
+											SELECT @ERROR_LINE_4 = (SELECT ERROR_LINE())
+											SELECT @ERROR_MESSAGE_4 = (SELECT ERROR_MESSAGE())
+
+											EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_4, @Alpha_Step_Number = '0X', @Alpha_Step_Name = 'Table Creation - Error', @Alpha_Result = 0
+											, @ErrorNumber = @ERROR_NUMBER_4, @ErrorSeverity = @ERROR_SEVERITY_4, @ErrorState = @ERROR_STATE_4, @ErrorProcedure = @ERROR_PROCEDURE_4, @ErrorLine = @ERROR_LINE_4, @ErrorMessage = @ERROR_MESSAGE_4;
+											
+										END CATCH
+
+										DECLARE @SQL_ATTRIBUTE1_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE2_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE3_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE4_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE5_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE6_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE7_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE8_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE9_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE10_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE11_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE12_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE13_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE14_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE15_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE16_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE17_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE18_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE19_4 NVARCHAR(MAX);
+										DECLARE @SQL_ATTRIBUTE20_4 NVARCHAR(MAX);
+
+										SELECT @SQL_ATTRIBUTE1_4 = (SELECT ATTRIBUTE_1 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE2_4 = (SELECT ATTRIBUTE_2 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE3_4 = (SELECT ATTRIBUTE_3 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE4_4 = (SELECT ATTRIBUTE_4 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE5_4 = (SELECT ATTRIBUTE_5 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE6_4 = (SELECT ATTRIBUTE_6 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE7_4 = (SELECT ATTRIBUTE_7 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE8_4 = (SELECT ATTRIBUTE_8 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE9_4 = (SELECT ATTRIBUTE_9 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE10_4 = (SELECT ATTRIBUTE_10 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE11_4 = (SELECT ATTRIBUTE_11 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE12_4 = (SELECT ATTRIBUTE_12 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);	
+										SELECT @SQL_ATTRIBUTE13_4 = (SELECT ATTRIBUTE_13 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);	
+										SELECT @SQL_ATTRIBUTE14_4 = (SELECT ATTRIBUTE_14 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE15_4 = (SELECT ATTRIBUTE_15 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE16_4 = (SELECT ATTRIBUTE_16 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);	
+										SELECT @SQL_ATTRIBUTE17_4 = (SELECT ATTRIBUTE_17 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE18_4 = (SELECT ATTRIBUTE_18 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);	
+										SELECT @SQL_ATTRIBUTE19_4 = (SELECT ATTRIBUTE_19 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+										SELECT @SQL_ATTRIBUTE20_4 = (SELECT ATTRIBUTE_20 FROM CREATE_TRANS_LOAD_TABLES WHERE Table_Name = @Table_Name_By_Loop_4);
+
+
+										EXEC(@SQL_ATTRIBUTE1_4 + ' ' + @SQL_ATTRIBUTE2_4 + ' ' + @SQL_ATTRIBUTE3_4 + ' ' + 
+											@SQL_ATTRIBUTE4_4 + ' ' + @SQL_ATTRIBUTE5_4 + ' ' + @SQL_ATTRIBUTE6_4 + ' ' + 
+											@SQL_ATTRIBUTE7_4 + ' ' + @SQL_ATTRIBUTE8_4 + ' ' + @SQL_ATTRIBUTE9_4 + ' ' + 
+											@SQL_ATTRIBUTE10_4 + ' ' + @SQL_ATTRIBUTE11_4 + ' ' + @SQL_ATTRIBUTE12_4 + ' ' + @SQL_ATTRIBUTE13_4
+											)
+										EXEC(@SQL_ATTRIBUTE14_4)
+										EXEC(@SQL_ATTRIBUTE15_4)
+										EXEC(@SQL_ATTRIBUTE16_4)
+										EXEC(@SQL_ATTRIBUTE17_4)
+										EXEC(@SQL_ATTRIBUTE18_4)
+										EXEC(@SQL_ATTRIBUTE19_4)
+										EXEC(@SQL_ATTRIBUTE20_4)
+
+											
+												
+										DECLARE @BEG_TIME4_4 DATETIME
+										DECLARE @END_TIME4_4 DATETIME
+										DECLARE @DURATION4_4 INT
+										DECLARE @RECORD_CNT4_4 INT
+										DECLARE @SQL_4B_4 VARCHAR(MAX)
+										DECLARE @SQL_4C_4 VARCHAR(MAX)
+										DECLARE @SQL_4D_4 VARCHAR(MAX)
+										DECLARE @SQL_4E_4 VARCHAR(MAX)
+												
+										DECLARE @RECORD_CNT4A_4 NVARCHAR(MAX) = N'SELECT @RECORD_CNT4_4 = (SELECT COUNT(*) FROM ' + @TABLE_NAME_4 + ')'
+										EXEC sp_executesql @RECORD_CNT4A_4, N'@RECORD_CNT4_4 INT OUT', @RECORD_CNT4_4 OUT
+												
+										DECLARE @BEG_TIME4A_4 NVARCHAR(MAX) = N'SELECT @BEG_TIME4_4 = (SELECT Alpha_DateTime FROM Alpha_Table_3 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_4 + ''' AND RIGHT(Alpha_Step_Number,1) = ''A'')'
+										EXEC sp_executesql @BEG_TIME4A_4, N'@BEG_TIME4_4 DATETIME OUT', @BEG_TIME4_4 OUT
+
+										DECLARE @END_TIME4A_4 NVARCHAR(MAX) = N'SELECT @END_TIME4_4 = (SELECT Alpha_DateTime FROM Alpha_Table_3 WHERE 1 = 1 AND Alpha_Stage = ''' + @TABLE_NAME_4 + ''' AND RIGHT(Alpha_Step_Number,1) = ''H'')'
+										EXEC sp_executesql @END_TIME4A_4, N'@END_TIME4_4 DATETIME OUT', @END_TIME4_4 OUT
+
+										SET @DURATION4_4 = DATEDIFF(SECOND,@BEG_TIME4_4,@END_TIME4_4)
+											 
+													
+										EXEC dbo.usp_Insert_Alpha_3 @Alpha_Stage = @TABLE_NAME_4, @Alpha_Step_Number = '0Z', @Alpha_Step_Name = 'Stats', @Alpha_Begin_Time = @BEG_TIME4_4, @Alpha_End_Time = @END_TIME4_4, @Alpha_Duration_In_Seconds = @DURATION4_4, @Alpha_Count = @RECORD_CNT4_4, @Alpha_Result = 1;
+
+									END
+								SET @Main_LOOP_NUM_4 = @Main_LOOP_NUM_4 + 1	
+							END
+						SET @Main_LOOP_NUM_4 = 0						
+					END
 			END
 	END
 	

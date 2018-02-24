@@ -1414,6 +1414,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Employer_Ldsp_Id NVARCHAR(100)
 			, StatusCode NVARCHAR(400)
 			, Employment_Modified_On_Date DATE
+			, Employment_Lds_CampusAddress NVARCHAR(100)
 			' -- Create_Table
 		, 'ContactId 
 			, Employment_Key 
@@ -1436,6 +1437,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Employer_Ldsp_Id
 			, StatusCode
 			, Employment_Modified_On_Date
+			, Employment_Lds_CampusAddress
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

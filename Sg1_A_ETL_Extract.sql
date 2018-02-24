@@ -3089,6 +3089,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, ModifiedOn DATETIME
 			, Plus_RelatedAddress UNIQUEIDENTIFIER
 			, Plus_RelatedPhone UNIQUEIDENTIFIER
+			, Lds_CampusAddress NVARCHAR(100)
 			' -- Create_Fields
 		, 'New_EmploymentsId
 			, New_EmploymentId
@@ -3112,6 +3113,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, ModifiedOn
 			, Plus_RelatedAddress
 			, Plus_RelatedPhone
+			, Lds_CampusAddress
 			' -- Insert_Fields
 		, 'New_EmploymentBase A
 				LEFT JOIN _MDT_Conversion_Dim B ON YEAR(A.New_DateStarted) = B.Date_Year
@@ -3144,6 +3146,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 					ELSE DATEADD(hh,-7,A.ModifiedOn) END AS ModifiedOn
 			, Plus_RelatedAddress
 			, Plus_RelatedPhone
+			, Lds_CampusAddress
 			' -- Attribute_1
 		, ' ' -- Attribute_2
 		, ' ' -- Attribute_3

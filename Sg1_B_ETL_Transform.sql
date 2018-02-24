@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1455991
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1456221
    
 ******************************************************************************/
 
@@ -9631,6 +9631,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Employer_Ldsp_Id NVARCHAR(100)
 			, StatusCode NVARCHAR(400)
 			, Employment_Modified_On_Date DATE
+			, Employment_Lds_CampusAddress NVARCHAR(100)
 			' -- Create_Table
 		, 'ContactId 
 			, Employment_Key 
@@ -9653,6 +9654,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Employer_Ldsp_Id
 			, StatusCode
 			, Employment_Modified_On_Date
+			, Employment_Lds_CampusAddress
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement
@@ -9715,6 +9717,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								, A.New_LdspId AS Employer_Ldsp_Id
 								, S.Column_Label AS StatusCode
 								, E.ModifiedOn AS Employment_Modified_On_Date
+								, E.Lds_CampusAddress AS Employment_Lds_CampusAddress
 								FROM Ext_Employment E
 									LEFT JOIN Ext_Source NS ON E.New_Source = NS.New_SourceId
 									LEFT JOIN Ext_Institution NI ON E.New_InstitutionalHierarchyId = NI.New_InstitutionId
@@ -9781,6 +9784,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 						, Employer_Ldsp_Id
 						, StatusCode
 						, Employment_Modified_On_Date
+						, Employment_Lds_CampusAddress
 						)
 						SELECT DISTINCT CONVERT(NVARCHAR(100),A.ContactId) AS ContactId
 						, A.Employment_Key
@@ -9803,6 +9807,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 						, A.Employer_Ldsp_Id
 						, A.StatusCode
 						, A.Employment_Modified_On_Date
+						, A.Employment_Lds_CampusAddress
 						FROM #Employment_Temp_1 A
 							LEFT JOIN #Employment_Temp_2 B ON A.ContactId = B.ContactId
 					INSERT INTO _Employment_Bridge --> HARD CODED <--
@@ -14278,7 +14283,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((109 - 1456100)/-1)
+			SET @Barsoom_Base = ((179 - 1456400)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -18889,7 +18894,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				INSERT INTO [OneAccord_Warehouse].[dbo]._Email_Bridge
 					VALUES(NULL,0,0);
 				INSERT INTO [OneAccord_Warehouse].[dbo]._Employment_Dim
-					VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+					VALUES(NULL,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 				INSERT INTO [OneAccord_Warehouse].[dbo]._Employment_Bridge
 					VALUES(NULL,0,0);
 				INSERT INTO [OneAccord_Warehouse].[dbo]._Language_Dim

@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1456221
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1465267
    
 ******************************************************************************/
 
@@ -13268,6 +13268,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_Date_Ldsp DATE
 			, Donor_Spouse_Middle_Name NVARCHAR(50)
 			, Donor_Spouse_Birth_Name NVARCHAR(100)
+			, Donor_Total_Giving_Current_Year_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_1_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_2_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_3_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_4_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_5_With_Matching MONEY
 			'
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -13623,6 +13629,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_Date_Ldsp
 			, Donor_Spouse_Middle_Name
 			, Donor_Spouse_Birth_Name
+			, Donor_Total_Giving_Current_Year_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_1_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_2_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_3_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_4_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_5_With_Matching
 			'
 		, ' '
 		, ' '
@@ -14283,7 +14295,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((179 - 1456400)/-1)
+			SET @Barsoom_Base = ((133 - 1465400)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -14649,6 +14661,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 									, Donor_First_Gift_Date_Ldsp
 									, Donor_Spouse_Middle_Name
 									, Donor_Spouse_Birth_Name
+									, Donor_Total_Giving_Current_Year_With_Matching
+									, Donor_Total_Giving_Current_Year_Minus_1_With_Matching
+									, Donor_Total_Giving_Current_Year_Minus_2_With_Matching
+									, Donor_Total_Giving_Current_Year_Minus_3_With_Matching
+									, Donor_Total_Giving_Current_Year_Minus_4_With_Matching
+									, Donor_Total_Giving_Current_Year_Minus_5_With_Matching
 									)
 									SELECT DISTINCT A.Donor_Key
 										, COALESCE(A.Activity_Group_Key,0) AS Activity_Group_Key
@@ -15004,6 +15022,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_First_Gift_Date_Ldsp
 										, AA.Spouse_Middle_Name AS Donor_Spouse_Middle_Name
 										, AA.Spouse_Birth_Name AS Donor_Spouse_Birth_Name
+										, NULL AS Donor_Total_Giving_Current_Year_With_Matching
+										, NULL AS Donor_Total_Giving_Current_Year_Minus_1_With_Matching
+										, NULL AS Donor_Total_Giving_Current_Year_Minus_2_With_Matching
+										, NULL AS Donor_Total_Giving_Current_Year_Minus_3_With_Matching
+										, NULL AS Donor_Total_Giving_Current_Year_Minus_4_With_Matching
+										, NULL AS Donor_Total_Giving_Current_Year_Minus_5_With_Matching
 										FROM OneAccord_Warehouse.dbo._Donor_Pre_Dim A
 											INNER JOIN OneAccord_Warehouse.dbo._Numbered_ContactIds NUM ON A.Donor_Key = NUM.ContactId 
 											LEFT JOIN OneAccord_Warehouse.dbo._Donor_Gender_ B ON A.GenderCode = B.Column_Value
@@ -34231,9 +34255,111 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
 		END CATCH 
 		' -- Attribute_12
-	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = @TABLE_NAME, @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+	, 'BEGIN TRY
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(New_RelatedConstituent, New_OrganizationId) AS Donor_Key 
+							, SUM(New_CreditAmount) AS Donor_Total_Giving_Current_Year_With_Matching
+							FROM _Gift_Credit_
+							WHERE 1 = 1
+								AND CONVERT(DATE,New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,0),112) -- Beginning of this year
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-0,-1),112) -- End of this year
+								AND Plus_Type != 100000001 --Exclude Influence
+						GROUP BY COALESCE(New_RelatedConstituent, New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_Current_Year_With_Matching = S.Donor_Total_Giving_Current_Year_With_Matching
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(New_RelatedConstituent, New_OrganizationId) AS Donor_Key 
+							, SUM(New_CreditAmount) AS Donor_Total_Giving_Current_Year_Minus_1_With_Matching
+							FROM _Gift_Credit_
+							WHERE 1 = 1
+								AND CONVERT(DATE,New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,0),112) -- Beginning of this year -1
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-1,-1),112) -- End of this year -1
+								AND Plus_Type != 100000001 --Exclude Influence
+						GROUP BY COALESCE(New_RelatedConstituent, New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_Current_Year_Minus_1_With_Matching = S.Donor_Total_Giving_Current_Year_Minus_1_With_Matching
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(New_RelatedConstituent, New_OrganizationId) AS Donor_Key 
+							, SUM(New_CreditAmount) AS Donor_Total_Giving_Current_Year_Minus_2_With_Matching
+							FROM _Gift_Credit_
+							WHERE 1 = 1
+								AND CONVERT(DATE,New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,0),112) -- Beginning of this year -2
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-2,-1),112) -- End of this year -2
+								AND Plus_Type != 100000001 --Exclude Influence
+							GROUP BY COALESCE(New_RelatedConstituent, New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_Current_Year_Minus_2_With_Matching = S.Donor_Total_Giving_Current_Year_Minus_2_With_Matching
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(New_RelatedConstituent, New_OrganizationId) AS Donor_Key 
+							, SUM(New_CreditAmount) AS Donor_Total_Giving_Current_Year_Minus_3_With_Matching
+							FROM _Gift_Credit_
+							WHERE 1 = 1
+								AND CONVERT(DATE,New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,0),112) -- Beginning of this year -3
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-3,-1),112) -- End of this year -3
+								AND Plus_Type != 100000001 --Exclude Influence
+							GROUP BY COALESCE(New_RelatedConstituent, New_OrganizationId)
+						) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_Current_Year_Minus_3_With_Matching = S.Donor_Total_Giving_Current_Year_Minus_3_With_Matching
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Current_Year_Minus_4_With_Matching
+							FROM _Gift_Credit_ A
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,0),112) -- Beginning of this year -4
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-4,-1),112) -- End of this year -4
+								AND A.Plus_Type != 100000001 --Exclude Influence
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_Current_Year_Minus_4_With_Matching = S.Donor_Total_Giving_Current_Year_Minus_4_With_Matching
+						;
+			MERGE INTO _Donor_Dim T
+				USING (
+						SELECT COALESCE(A.New_RelatedConstituent, A.New_OrganizationId) AS Donor_Key 
+							, SUM(A.New_CreditAmount) AS Donor_Total_Giving_Current_Year_Minus_5_With_Matching
+							FROM _Gift_Credit_ A
+							WHERE 1 = 1
+								AND CONVERT(DATE,A.New_ReceiptDate,112) BETWEEN CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-6,0),112) -- Beginning of this year -5
+														 AND CONVERT(NVARCHAR(10),DATEADD(YEAR, DATEDIFF(YEAR, -2, GETDATE()-1)-5,-1),112) -- End of this year -5
+								AND A.Plus_Type != 100000001 --Exclude Influence
+							GROUP BY COALESCE(A.New_RelatedConstituent, A.New_OrganizationId)
+					) S ON T.Donor_Key = S.Donor_Key
+				WHEN MATCHED THEN 
+					UPDATE
+						SET T.Donor_Total_Giving_Current_Year_Minus_5_With_Matching = S.Donor_Total_Giving_Current_Year_Minus_5_With_Matching
+						;
+		END TRY 
+		BEGIN CATCH
+			SELECT @ERROR_NUMBER = (SELECT ERROR_NUMBER())
+			SELECT @ERROR_SEVERITY = (SELECT ERROR_SEVERITY())
+			SELECT @ERROR_STATE = (SELECT ERROR_STATE())
+			SELECT @ERROR_PROCEDURE = (SELECT ERROR_PROCEDURE())
+			SELECT @ERROR_LINE = (SELECT ERROR_LINE())
+			SELECT @ERROR_MESSAGE = (SELECT ERROR_MESSAGE())
+			EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Merge_Into_Donor_Dim_2'', @Alpha_Step_Number = ''164X'', @Alpha_Step_Name = ''_Merge_Into_Donor_Dim_2 - Error'', @Alpha_Result = 0
+			, @ErrorNumber = @ERROR_NUMBER, @ErrorSeverity = @ERROR_SEVERITY, @ErrorState = @ERROR_STATE, @ErrorProcedure = @ERROR_PROCEDURE, @ErrorLine = @ERROR_LINE, @ErrorMessage = @ERROR_MESSAGE;  
+		END CATCH  
 		' -- Attribute_13
-	, ' ' -- Attribute_14
+	, 'EXEC dbo.usp_Insert_Alpha_2 @Alpha_Stage = ''_Merge_Into_Donor_Dim_2'', @Alpha_Step_Number = ''164H'', @Alpha_Step_Name = ''End'', @Alpha_Result = 1; 
+		' -- Attribute_14
 	, ' ' -- Attribute_15
 	, ' ' -- Attribute_16
 	, ' ' -- Attribute_17
@@ -34313,6 +34439,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, First_Gift_Date_Ldsbc DATE
 		, First_Gift_Date_Church DATE
 		, First_Gift_Date_Ldsp DATE
+		, Total_Giving_Current_Year_With_Matching MONEY
+		, Total_Giving_1_Years_Ago_With_Matching MONEY
+		, Total_Giving_2_Years_Ago_With_Matching MONEY
+		, Total_Giving_3_Years_Ago_With_Matching MONEY
+		, Total_Giving_4_Years_Ago_With_Matching MONEY
+		, Total_Giving_5_Years_Ago_With_Matching MONEY
 		' -- Create_Table
 	, 'Ldsp_Id
 		, Donor_Full_Name
@@ -34375,6 +34507,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 		, First_Gift_Date_Ldsbc
 		, First_Gift_Date_Church
 		, First_Gift_Date_Ldsp
+		, Total_Giving_Current_Year_With_Matching
+		, Total_Giving_1_Years_Ago_With_Matching
+		, Total_Giving_2_Years_Ago_With_Matching
+		, Total_Giving_3_Years_Ago_With_Matching
+		, Total_Giving_4_Years_Ago_With_Matching
+		, Total_Giving_5_Years_Ago_With_Matching
 		' -- Insert_Fields
 	, ' ' -- From_Statement
 	, ' ' -- Where_Statement
@@ -34452,6 +34590,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				, First_Gift_Date_Ldsbc
 				, First_Gift_Date_Church
 				, First_Gift_Date_Ldsp
+				, Total_Giving_Current_Year_With_Matching
+				, Total_Giving_1_Years_Ago_With_Matching
+				, Total_Giving_2_Years_Ago_With_Matching
+				, Total_Giving_3_Years_Ago_With_Matching
+				, Total_Giving_4_Years_Ago_With_Matching
+				, Total_Giving_5_Years_Ago_With_Matching
 			)
 			SELECT A.Donor_Ldsp_Id AS Ldsp_Id
 				, A.Donor_Name AS Donor_Full_Name
@@ -34514,6 +34658,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 				, A.Donor_First_Gift_Date_Ldsbc AS First_Gift_Date_Ldsbc
 				, A.Donor_First_Gift_Date_Church AS First_Gift_Date_Church
 				, A.Donor_First_Gift_Date_Ldsp AS First_Gift_Date_Ldsp
+				, A.Donor_Total_Giving_Current_Year_With_Matching AS Total_Giving_Current_Year_With_Matching
+				, A.Donor_Total_Giving_Current_Year_Minus_1_With_Matching AS Total_Giving_1_Years_Ago_With_Matching
+				, A.Donor_Total_Giving_Current_Year_Minus_2_With_Matching AS Total_Giving_2_Years_Ago_With_Matching
+				, A.Donor_Total_Giving_Current_Year_Minus_3_With_Matching AS Total_Giving_3_Years_Ago_With_Matching
+				, A.Donor_Total_Giving_Current_Year_Minus_4_With_Matching AS Total_Giving_4_Years_Ago_With_Matching
+				, A.Donor_Total_Giving_Current_Year_Minus_5_With_Matching AS Total_Giving_5_Years_Ago_With_Matching
 				FROM _Donor_Dim A
 					LEFT JOIN _Primary_Contact_Dim B ON A.Donor_Key = B.Donor_Key
 					WHERE 1 = 1

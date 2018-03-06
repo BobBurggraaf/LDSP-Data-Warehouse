@@ -3142,6 +3142,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_Date_Ldsp DATE
 			, Donor_Spouse_Middle_Name NVARCHAR(50)
 			, Donor_Spouse_Birth_Name NVARCHAR(100)
+			, Donor_Total_Giving_Current_Year_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_1_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_2_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_3_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_4_With_Matching MONEY
+			, Donor_Total_Giving_Current_Year_Minus_5_With_Matching MONEY
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3497,6 +3503,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_First_Gift_Date_Ldsp
 			, Donor_Spouse_Middle_Name
 			, Donor_Spouse_Birth_Name
+			, Donor_Total_Giving_Current_Year_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_1_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_2_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_3_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_4_With_Matching
+			, Donor_Total_Giving_Current_Year_Minus_5_With_Matching
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement
@@ -7519,6 +7531,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, First_Gift_Date_Ldsbc DATE
 			, First_Gift_Date_Church DATE
 			, First_Gift_Date_Ldsp DATE
+			, Total_Giving_Current_Year_With_Matching MONEY
+			, Total_Giving_1_Years_Ago_With_Matching MONEY
+			, Total_Giving_2_Years_Ago_With_Matching MONEY
+			, Total_Giving_3_Years_Ago_With_Matching MONEY
+			, Total_Giving_4_Years_Ago_With_Matching MONEY
+			, Total_Giving_5_Years_Ago_With_Matching MONEY
 			' -- Create_Table
 		, '	Ldsp_Id
 			, Donor_Full_Name
@@ -7581,6 +7599,12 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, First_Gift_Date_Ldsbc
 			, First_Gift_Date_Church
 			, First_Gift_Date_Ldsp
+			, Total_Giving_Current_Year_With_Matching
+			, Total_Giving_1_Years_Ago_With_Matching
+			, Total_Giving_2_Years_Ago_With_Matching
+			, Total_Giving_3_Years_Ago_With_Matching
+			, Total_Giving_4_Years_Ago_With_Matching
+			, Total_Giving_5_Years_Ago_With_Matching
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

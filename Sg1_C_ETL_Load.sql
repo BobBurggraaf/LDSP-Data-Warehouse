@@ -3148,6 +3148,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Total_Giving_Current_Year_Minus_3_With_Matching MONEY
 			, Donor_Total_Giving_Current_Year_Minus_4_With_Matching MONEY
 			, Donor_Total_Giving_Current_Year_Minus_5_With_Matching MONEY
+			, Donor_Lds_TelefundNotes NVARCHAR(4000)
 			' -- Create_Table 
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -3509,6 +3510,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Total_Giving_Current_Year_Minus_3_With_Matching
 			, Donor_Total_Giving_Current_Year_Minus_4_With_Matching
 			, Donor_Total_Giving_Current_Year_Minus_5_With_Matching
+			, Donor_Lds_TelefundNotes
 			' -- Insert_Fields
 		, ' ' -- From_Statement
 		, ' ' -- Where_Statement

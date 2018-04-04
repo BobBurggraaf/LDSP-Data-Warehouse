@@ -2228,6 +2228,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Lds_IsQualified BIT
 			, Lds_QualifiedOn DATETIME
 			, Lds_QualifiedBy UNIQUEIDENTIFIER
+			, Lds_TelefundNotes NVARCHAR(4000)
 			' -- Create_Fields
 		, 'ContactId
 			, New_Ldspid
@@ -2288,6 +2289,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, Lds_IsQualified
 			, Lds_QualifiedOn
 			, Lds_QualifiedBy
+			, Lds_TelefundNotes
 			' -- Insert_Fields
 		, 'ContactBase A
 				LEFT JOIN _MDT_Conversion_Dim B ON YEAR(A.Plus_WealthDate) = B.Date_Year
@@ -2355,6 +2357,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 			, CASE WHEN DATENAME(dy,A.Lds_QualifiedOn) BETWEEN C.Mdt_Begin_Date_Number AND C.Mdt_End_Date_Number THEN DATEADD(hh,-6,A.Lds_QualifiedOn)
 					ELSE DATEADD(hh,-7,A.Lds_QualifiedOn) END AS Lds_QualifiedOn
 			, Lds_QualifiedBy
+			, CONVERT(NVARCHAR(4000),SUBSTRING(Lds_TelefundNotes,1,4000)) AS Lds_TelefundNotes
 			' -- Attribute_1
 		, ' ' -- Attribute_2
 		, ' ' -- Attribute_3

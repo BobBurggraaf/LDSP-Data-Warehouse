@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1465267
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1465512
    
 ******************************************************************************/
 
@@ -13274,6 +13274,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Total_Giving_Current_Year_Minus_3_With_Matching MONEY
 			, Donor_Total_Giving_Current_Year_Minus_4_With_Matching MONEY
 			, Donor_Total_Giving_Current_Year_Minus_5_With_Matching MONEY
+			, Donor_Lds_TelefundNotes NVARCHAR(4000)
 			'
 		, 'Donor_Key      
 			, Activity_Group_Key 
@@ -13635,6 +13636,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 			, Donor_Total_Giving_Current_Year_Minus_3_With_Matching
 			, Donor_Total_Giving_Current_Year_Minus_4_With_Matching
 			, Donor_Total_Giving_Current_Year_Minus_5_With_Matching
+			, Donor_Lds_TelefundNotes
 			'
 		, ' '
 		, ' '
@@ -14037,6 +14039,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								, B.Plus_SpousePreferredLastName
 								, B.Plus_SpousePreferredFullName
 								, B.Plus_I5TextLinesLdsp AS Donor_Ldsp_Text_Lines
+								, B.Lds_TelefundNotes AS Donor_Lds_TelefundNotes
 								FROM #Contact_Account_Temp A
 									LEFT JOIN Ext_Contact B ON A.Donor_Key = CONVERT(NVARCHAR(100),B.ContactId)                                                      
 				) A
@@ -14162,6 +14165,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								, B.New_MatchingRatio
 								, B.PreferredContactMethodCode
 								, B.Plus_MatchingGiftProgram
+								, A.Donor_Lds_TelefundNotes
 								FROM #Contact_Added_Temp A
 									LEFT JOIN Ext_Account B ON A.Donor_Key = CONVERT(NVARCHAR(100),B.AccountId)
 				) A                                                      
@@ -14295,7 +14299,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((133 - 1465400)/-1)
+			SET @Barsoom_Base = ((188 - 1465700)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -14667,6 +14671,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 									, Donor_Total_Giving_Current_Year_Minus_3_With_Matching
 									, Donor_Total_Giving_Current_Year_Minus_4_With_Matching
 									, Donor_Total_Giving_Current_Year_Minus_5_With_Matching
+									, Donor_Lds_TelefundNotes
 									)
 									SELECT DISTINCT A.Donor_Key
 										, COALESCE(A.Activity_Group_Key,0) AS Activity_Group_Key
@@ -15028,6 +15033,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 										, NULL AS Donor_Total_Giving_Current_Year_Minus_3_With_Matching
 										, NULL AS Donor_Total_Giving_Current_Year_Minus_4_With_Matching
 										, NULL AS Donor_Total_Giving_Current_Year_Minus_5_With_Matching
+										, A.Donor_Lds_TelefundNotes
 										FROM OneAccord_Warehouse.dbo._Donor_Pre_Dim A
 											INNER JOIN OneAccord_Warehouse.dbo._Numbered_ContactIds NUM ON A.Donor_Key = NUM.ContactId 
 											LEFT JOIN OneAccord_Warehouse.dbo._Donor_Gender_ B ON A.GenderCode = B.Column_Value

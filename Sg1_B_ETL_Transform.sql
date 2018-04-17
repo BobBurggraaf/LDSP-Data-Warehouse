@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1465512
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1465711
    
 ******************************************************************************/
 
@@ -10852,18 +10852,18 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 											AND New_Primary = 1
 									) C ON A.Relationship_ContactId = C.New_NumberId LEFT JOIN
 									(SELECT Donor_Key
-										, CASE WHEN DATEADD(YEAR, DATEDIFF (YEAR, Birthdate, GETDATE()), Birthdate) > GETDATE()
-											THEN DATEDIFF(YEAR, Birthdate, GETDATE()) - 1
-											ELSE DATEDIFF(YEAR, Birthdate, GETDATE()) END AS Relationship_Age
+										, CASE WHEN DATEADD(YEAR, DATEDIFF (YEAR, New_BirthDate, GETDATE()), New_BirthDate) > GETDATE()
+											THEN DATEDIFF(YEAR, New_BirthDate, GETDATE()) - 1
+											ELSE DATEDIFF(YEAR, New_BirthDate, GETDATE()) END AS Relationship_Age
 										FROM
 											(SELECT CONVERT(NVARCHAR(100),ContactId) AS Donor_Key
-												, CONVERT(NVARCHAR(20),CAST(New_Birthdate AS DATETIME),110) AS Birthdate
+												, CASE WHEN SUBSTRING(New_BirthDate,1,2) IN (''01'',''02'',''03'',''04'',''05'',''06'',''07'',''08'',''09'',''10'',''11'',''12'')
+														AND SUBSTRING(New_BirthDate,4,2) IN (''01'',''02'',''03'',''04'',''05'',''06'',''07'',''08'',''09'',''10'',
+															''11'',''12'',''13'',''14'',''15'',''16'',''17'',''18'',''19'',''20'',
+															''21'',''22'',''23'',''24'',''25'',''26'',''27'',''28'',''29'',''30'',''31'') 
+														AND SUBSTRING(New_BirthDate,7,2) IN (''19'',''20'')
+													THEN CONVERT(VARCHAR(10),New_BirthDate,101) ELSE NULL END AS New_BirthDate
 												FROM Ext_Contact
-												WHERE 1 = 1
-													AND SUBSTRING(New_Birthdate,4,2) <> ''00''
-													AND SUBSTRING(New_Birthdate,1,2) <> ''00''
-													AND SUBSTRING(New_Birthdate,4,2) <> ''##''
-													AND SUBSTRING(New_Birthdate,1,2) <> ''##''
 											) A
 									) D ON A.Relationship_ContactId = D.Donor_Key
 							) A
@@ -14299,7 +14299,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((188 - 1465700)/-1)
+			SET @Barsoom_Base = ((189 - 1465900)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1

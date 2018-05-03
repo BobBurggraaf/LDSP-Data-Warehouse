@@ -44,7 +44,7 @@
    13851 _Donation_Dim
    14629 _Donation_Fact
    
-   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1465711
+   11644 Barsoom (usp_Barsoom, usp_Barsoom_usp, LDSP_Table_Check) 1465714
    
 ******************************************************************************/
 
@@ -14299,7 +14299,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 								FROM _Numbered_ContactIds) A
 					)
 			DECLARE @Barsoom_Base BIGINT
-			SET @Barsoom_Base = ((189 - 1465900)/-1)
+			SET @Barsoom_Base = ((186 - 1465900)/-1)
 			EXEC usp_Barsoom @Barsoom_Cnt = @Barsoom_Base
 			DECLARE @LOOP_NUM INT
 			SET @LOOP_NUM = 1
@@ -15077,7 +15077,7 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Trans_Load_Tables
 														, Plus_ConnectedLiaison
 														, Plus_PendingLiaison
 														FROM 
-															(SELECT ROW_NUMBER() OVER(PARTITION BY ContactId ORDER BY ContactId) AS Row_Num
+															(SELECT ROW_NUMBER() OVER(PARTITION BY ContactId ORDER BY Liaison_Type) AS Row_Num
 																, CONVERT(NVARCHAR(100),ContactId) AS ContactId
 																, CASE WHEN Liaison_Type = ''Coordinating_Liaison'' THEN Liaison ELSE NULL END AS Plus_CoordinatingLiaison
 																, CASE WHEN Liaison_Type = ''Connected_Liaison'' THEN Liaison ELSE NULL END AS Plus_ConnectedLiaison

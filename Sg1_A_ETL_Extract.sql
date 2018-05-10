@@ -319,40 +319,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 								SET T.Record_Deleted = ''Y''
 								;
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(New_LdspId) FROM Check_AccountBase_New_LdspId)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)
-								SET @Check_Xml = CAST((SELECT New_LdspId AS ''td'','''', Characters_Present AS ''td'','''', Digit_Count_Not_9 AS ''td'','''', Record_Deleted AS ''td'' FROM Check_AccountBase_New_LdspId ORDER BY New_LdspId DESC
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_LdspId </th> <th> Characters_Present </th> <th> Digit_Count_Not_9 </th> <th> Record_Deleted </th> </tr>''    
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check AccountBase New_LdspId''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_AccountBase_New_LdspId''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_AccountBase_New_LdspId.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(New_LdspId) FROM Check_AccountBase_New_LdspId)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)
+					--			SET @Check_Xml = CAST((SELECT New_LdspId AS ''td'','''', Characters_Present AS ''td'','''', Digit_Count_Not_9 AS ''td'','''', Record_Deleted AS ''td'' FROM Check_AccountBase_New_LdspId ORDER BY New_LdspId DESC
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_LdspId </th> <th> Characters_Present </th> <th> Digit_Count_Not_9 </th> <th> Record_Deleted </th> </tr>''    
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check AccountBase New_LdspId''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_AccountBase_New_LdspId''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_AccountBase_New_LdspId.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_AccountBase_New_LdspId)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - End'', @Alpha_Result = 1;
@@ -487,40 +487,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_AccountBase_AccountId)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)
-								SET @Check_Xml = CAST((SELECT AccountId AS ''td'','''', Is_Null AS ''td'','''', Duplicate_Record AS ''td'','''', Records_Cnt AS ''td'','''', Record_Deleted AS ''td'' FROM Check_AccountBase_AccountId ORDER BY AccountId DESC
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> AccountId </th> <th> Is_Null </th> <th> Duplicate_Record </th> <th> Records_Cnt </th> <th> Record_Deleted </th> </tr>''    	 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check AccountBase AccountId''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_AccountBase_AccountId''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_AccountBase_AccountId.csv''
-									, @query_result_separator = ''^''
-					END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_AccountBase_AccountId)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)
+					--			SET @Check_Xml = CAST((SELECT AccountId AS ''td'','''', Is_Null AS ''td'','''', Duplicate_Record AS ''td'','''', Records_Cnt AS ''td'','''', Record_Deleted AS ''td'' FROM Check_AccountBase_AccountId ORDER BY AccountId DESC
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> AccountId </th> <th> Is_Null </th> <th> Duplicate_Record </th> <th> Records_Cnt </th> <th> Record_Deleted </th> </tr>''    	 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check AccountBase AccountId''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_AccountBase_AccountId''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_AccountBase_AccountId.csv''
+					--				, @query_result_separator = ''^''
+					--END
 					
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_AccountBase_AccountId)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -611,40 +611,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_AccountBase_Null_Columns)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There is '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' column that has started to be populated.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There are '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' columns that have started to be populated.''
-									END
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT Column_Name AS ''td'','''', Is_No_Longer_Null AS ''td'','''', Records_Cnt AS ''td'' FROM Check_AccountBase_Null_Columns ORDER BY Records_Cnt DESC
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> Column_Name </th> <th> Is_No_Longer_Null </th> <th> Records_Cnt </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check AccountBase AccountId''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_AccountBase_Null_Columns''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_AccountBase_Null_Columns.csv''
-									, @query_result_separator = ''^''
-					END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_AccountBase_Null_Columns)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There is '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' column that has started to be populated.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There are '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' columns that have started to be populated.''
+					--				END
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT Column_Name AS ''td'','''', Is_No_Longer_Null AS ''td'','''', Records_Cnt AS ''td'' FROM Check_AccountBase_Null_Columns ORDER BY Records_Cnt DESC
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> Column_Name </th> <th> Is_No_Longer_Null </th> <th> Records_Cnt </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check AccountBase AccountId''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_AccountBase_Null_Columns''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_AccountBase_Null_Columns.csv''
+					--				, @query_result_separator = ''^''
+					--END
 					
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_AccountBase_Null_Columns)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -1041,40 +1041,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_AddressBase_Orphans)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END							
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT New_AddressId AS ''td'','''', Plus_RelatedContact AS ''td'','''', Plus_RelatedAccount AS ''td'','''', New_Primary AS ''td'','''', Is_Orphaned AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_AddressBase_Orphans ORDER BY New_Primary DESC
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_AddressId </th> <th> Plus_RelatedContact </th> <th> Plus_RelatedAccount </th> <th> New_Primary </th> <th> Is_Orphaned </th> <th> Record_Deleted </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check New_AddressBase Orphans''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_AddressBase_Orphans''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_New_AddressBase_Orphans.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_AddressBase_Orphans)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END							
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT New_AddressId AS ''td'','''', Plus_RelatedContact AS ''td'','''', Plus_RelatedAccount AS ''td'','''', New_Primary AS ''td'','''', Is_Orphaned AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_AddressBase_Orphans ORDER BY New_Primary DESC
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_AddressId </th> <th> Plus_RelatedContact </th> <th> Plus_RelatedAccount </th> <th> New_Primary </th> <th> Is_Orphaned </th> <th> Record_Deleted </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check New_AddressBase Orphans''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_AddressBase_Orphans''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_New_AddressBase_Orphans.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 					
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_New_AddressBase_Orphans)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -1201,40 +1201,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_AddressBase_New_Confidential)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END						
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT New_AddressId AS ''td'','''', Plus_RelatedContact AS ''td'','''', Plus_RelatedAccount AS ''td'','''', New_Primary AS ''td'','''', New_Confidential AS ''td'','''', Is_Null AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_AddressBase_New_Confidential ORDER BY New_Primary DESC
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_AddressId </th> <th> Plus_RelatedContact </th> <th> Plus_RelatedAccount </th> <th> New_Primary </th> <th> New_Confidential </th> <th> Is_Null </th> <th> Record_Deleted </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check New_AddressBase New_Confidential''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_AddressBase_New_Confidential''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_New_AddressBase_New_Confidential.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_AddressBase_New_Confidential)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END						
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT New_AddressId AS ''td'','''', Plus_RelatedContact AS ''td'','''', Plus_RelatedAccount AS ''td'','''', New_Primary AS ''td'','''', New_Confidential AS ''td'','''', Is_Null AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_AddressBase_New_Confidential ORDER BY New_Primary DESC
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_AddressId </th> <th> Plus_RelatedContact </th> <th> Plus_RelatedAccount </th> <th> New_Primary </th> <th> New_Confidential </th> <th> Is_Null </th> <th> Record_Deleted </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check New_AddressBase New_Confidential''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_AddressBase_New_Confidential''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_New_AddressBase_New_Confidential.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_New_AddressBase_New_Confidential)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -1470,48 +1470,48 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_Plus_AlumniBase_Plus_Constituent)
-
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END
-							
-
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)
-								
-								SET @Check_Xml = CAST((SELECT Plus_AlumniId AS ''td'','''', Plus_Constituent AS ''td'','''', Is_Null AS ''td'','''', Record_Deleted AS ''td'' FROM Check_Plus_AlumniBase_Plus_Constituent 
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))
-									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> Plus_AlumniId </th> <th> Plus_Constituent </th> <th> Is_Null </th> <th> Record_Deleted </th> </tr>''    
-										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''
-								
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check Plus_AlumniBase Plus_Constituent''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_Plus_AlumniBase_Plus_Constituent''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_Plus_AlumniBase_Plus_Constituent.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+                    --
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_Plus_AlumniBase_Plus_Constituent)
+                    --
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END
+					--		
+                    --
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)
+					--			
+					--			SET @Check_Xml = CAST((SELECT Plus_AlumniId AS ''td'','''', Plus_Constituent AS ''td'','''', Is_Null AS ''td'','''', Record_Deleted AS ''td'' FROM Check_Plus_AlumniBase_Plus_Constituent 
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))
+					--				
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> Plus_AlumniId </th> <th> Plus_Constituent </th> <th> Is_Null </th> <th> Record_Deleted </th> </tr>''    
+					--					 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''
+					--			
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check Plus_AlumniBase Plus_Constituent''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_Plus_AlumniBase_Plus_Constituent''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_Plus_AlumniBase_Plus_Constituent.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_Plus_AlumniBase_Plus_Constituent)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -2840,40 +2840,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_EmailBase_Orphans)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT New_EmailId AS ''td'','''', New_ConstituentId AS ''td'','''', New_Primary AS ''td'','''', Is_Orphaned AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_EmailBase_Orphans ORDER BY New_Primary DESC
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_EmailId </th> <th> New_ConstituentId </th> <th> New_Primary </th> <th> Is_Orphaned </th> <th> Record_Deleted </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check New_EmailBase Orphans''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_EmailBase_Orphans''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_New_EmailBase_Orphans.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_EmailBase_Orphans)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT New_EmailId AS ''td'','''', New_ConstituentId AS ''td'','''', New_Primary AS ''td'','''', Is_Orphaned AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_EmailBase_Orphans ORDER BY New_Primary DESC
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_EmailId </th> <th> New_ConstituentId </th> <th> New_Primary </th> <th> Is_Orphaned </th> <th> Record_Deleted </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check New_EmailBase Orphans''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_EmailBase_Orphans''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_New_EmailBase_Orphans.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_New_EmailBase_Orphans)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -2994,40 +2994,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_EmailBase_Invalid_Emails)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END						
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT New_EmailId AS ''td'','''', New_ConstituentId AS ''td'','''', New_Emails AS ''td'','''', New_Primary AS ''td'','''', Is_Invalid_Email AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_EmailBase_Invalid_Emails ORDER BY New_Primary DESC
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_EmailId </th> <th> New_ConstituentId </th> <th> New_Emails </th> <th> New_Primary </th> <th> Is_Invalid_Email </th> <th> Record_Deleted </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check New_EmailBase Invalid Emails''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_EmailBase_Invalid_Emails''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_New_EmailBase_Invalid_Emails.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_EmailBase_Invalid_Emails)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END						
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT New_EmailId AS ''td'','''', New_ConstituentId AS ''td'','''', New_Emails AS ''td'','''', New_Primary AS ''td'','''', Is_Invalid_Email AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_EmailBase_Invalid_Emails ORDER BY New_Primary DESC
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_EmailId </th> <th> New_ConstituentId </th> <th> New_Emails </th> <th> New_Primary </th> <th> Is_Invalid_Email </th> <th> Record_Deleted </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check New_EmailBase Invalid Emails''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_EmailBase_Invalid_Emails''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_New_EmailBase_Invalid_Emails.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_New_EmailBase_Invalid_Emails)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -4403,40 +4403,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_PhoneBase_Orphans)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END							
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT New_PhoneId AS ''td'','''', New_NumberId AS ''td'','''', New_Primary AS ''td'','''', Is_Orphaned AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_PhoneBase_Orphans ORDER BY New_Primary DESC
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_PhoneId </th> <th> New_NumberId </th> <th> New_Primary </th> <th> Is_Orphaned </th> <th> Record_Deleted </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check New_PhoneBase Orphans''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_PhoneBase_Orphans''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_New_PhoneBase_Orphans.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_PhoneBase_Orphans)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END							
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT New_PhoneId AS ''td'','''', New_NumberId AS ''td'','''', New_Primary AS ''td'','''', Is_Orphaned AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_PhoneBase_Orphans ORDER BY New_Primary DESC
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_PhoneId </th> <th> New_NumberId </th> <th> New_Primary </th> <th> Is_Orphaned </th> <th> Record_Deleted </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check New_PhoneBase Orphans''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_PhoneBase_Orphans''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_New_PhoneBase_Orphans.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_New_PhoneBase_Orphans)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -4556,40 +4556,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_PhoneBase_Invalid_Phones)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END							
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT New_PhoneId AS ''td'','''', New_NumberId AS ''td'','''', New_PhoneNumber AS ''td'','''', New_Primary AS ''td'','''', Is_Invalid_Phone AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_PhoneBase_Invalid_Phones ORDER BY New_Primary DESC
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_PhoneId </th> <th> New_NumberId </th> <th> New_PhoneNumber </th> <th> New_Primary </th> <th> Is_Invalid_Phone </th> <th> Record_Deleted </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''		
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check New_PhoneBase Invalid Phones''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_PhoneBase_Invalid_Phones''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_New_PhoneBase_Invalid_Phones.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_PhoneBase_Invalid_Phones)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END							
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT New_PhoneId AS ''td'','''', New_NumberId AS ''td'','''', New_PhoneNumber AS ''td'','''', New_Primary AS ''td'','''', Is_Invalid_Phone AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_PhoneBase_Invalid_Phones ORDER BY New_Primary DESC
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_PhoneId </th> <th> New_NumberId </th> <th> New_PhoneNumber </th> <th> New_Primary </th> <th> Is_Invalid_Phone </th> <th> Record_Deleted </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''		
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check New_PhoneBase Invalid Phones''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_PhoneBase_Invalid_Phones''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_New_PhoneBase_Invalid_Phones.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_New_PhoneBase_Invalid_Phones)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -5441,40 +5441,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_StudentAttendanceBase_Orphans)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END							
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT New_StudentAttendanceId AS ''td'','''', New_StudentsAttendanceId AS ''td'','''', Is_Orphaned AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_StudentAttendanceBase_Orphans
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_StudentAttendanceId </th> <th> New_StudentsAttendanceId </th> <th> Is_Orphaned </th> <th> Record_Deleted </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check New_StudentAttendanceBase Orphans''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_StudentAttendanceBase_Orphans''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_New_StudentAttendanceBase_Orphans.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_StudentAttendanceBase_Orphans)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END							
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT New_StudentAttendanceId AS ''td'','''', New_StudentsAttendanceId AS ''td'','''', Is_Orphaned AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_StudentAttendanceBase_Orphans
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_StudentAttendanceId </th> <th> New_StudentsAttendanceId </th> <th> Is_Orphaned </th> <th> Record_Deleted </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''								
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check New_StudentAttendanceBase Orphans''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_StudentAttendanceBase_Orphans''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_New_StudentAttendanceBase_Orphans.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_New_StudentAttendanceBase_Orphans)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -5591,40 +5591,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_StudentAttendanceBase_Plus_Year)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END							
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT New_StudentAttendanceId AS ''td'','''', New_StudentsAttendanceId AS ''td'','''', Plus_Year AS ''td'','''', Is_Invalid_Year AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_StudentAttendanceBase_Plus_Year
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_StudentAttendanceId </th> <th> New_StudentsAttendancId </th> <th> Plus_Year </th> <th> Is_Invalid_Year </th> <th> Record_Deleted </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''				
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check New_StudentAttendanceBase Plus_Year''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_StudentAttendanceBase_Plus_Year''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_New_StudentAttendanceBase_Plus_Year.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_StudentAttendanceBase_Plus_Year)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END							
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT New_StudentAttendanceId AS ''td'','''', New_StudentsAttendanceId AS ''td'','''', Plus_Year AS ''td'','''', Is_Invalid_Year AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_StudentAttendanceBase_Plus_Year
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_StudentAttendanceId </th> <th> New_StudentsAttendancId </th> <th> Plus_Year </th> <th> Is_Invalid_Year </th> <th> Record_Deleted </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''				
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check New_StudentAttendanceBase Plus_Year''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_StudentAttendanceBase_Plus_Year''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_New_StudentAttendanceBase_Plus_Year.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_New_StudentAttendanceBase_Plus_Year)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
@@ -5743,40 +5743,40 @@ INSERT INTO OneAccord_Warehouse.dbo.Create_Extract_Tables
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Begin'', @Alpha_Result = 1;   
 				
 					-- Send Notification
-					DECLARE @Email_Check_Cnt INT
-					DECLARE @Email_Check_Body NVARCHAR(4000)
-					SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_StudentAttendanceBase_New_Term)
-						IF (@Email_Check_Cnt > 0) 
-							BEGIN	
-								IF (@Email_Check_Cnt = 1)
-									BEGIN
-										SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
-									END
-								ELSE
-									BEGIN
-										SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
-									END							
-								DECLARE @Check_Xml NVARCHAR(MAX)
-								DECLARE @Check_Body NVARCHAR(MAX)								
-								SET @Check_Xml = CAST((SELECT New_StudentAttendanceId AS ''td'','''', New_StudentsAttendanceId AS ''td'','''', New_Term AS ''td'','''', Is_Invalid_New_Term AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_StudentAttendanceBase_New_Term
-										FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
-									SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
-										<table border = 1> 
-										<tr>
-										<th> New_StudentAttendanceId </th> <th> New_StudentsAttendancId </th> <th> New_Term </th> <th> Is_Invalid_New_Term </th> <th> Record_Deleted </th> </tr>''    										 
-									SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''						
-								EXEC msdb.dbo.sp_send_dbmail
-									@recipients = ''fams@LDSChurch.org'' 
-									, @subject = ''Check New_StudentAttendanceBase New_Term''  -->>>>>> EMAIL SUBJECT <<<<<<<--
-									, @body = @Check_Body
-									, @body_format = ''HTML''
-									, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_StudentAttendanceBase_New_Term''
-									, @query_result_header=1
-									, @query_no_truncate=1
-									, @attach_query_result_as_file=1
-									, @query_attachment_filename = ''Check_New_StudentAttendanceBase_New_Term.csv''
-									, @query_result_separator = ''^''
-							END
+					--DECLARE @Email_Check_Cnt INT
+					--DECLARE @Email_Check_Body NVARCHAR(4000)
+					--SELECT @Email_Check_Cnt = (SELECT COUNT(*) FROM Check_New_StudentAttendanceBase_New_Term)
+					--	IF (@Email_Check_Cnt > 0) 
+					--		BEGIN	
+					--			IF (@Email_Check_Cnt = 1)
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There was '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check error.''
+					--				END
+					--			ELSE
+					--				BEGIN
+					--					SET @Email_Check_Body = ''There were '' + CONVERT(NVARCHAR(10),@Email_Check_Cnt) + '' data check errors.''
+					--				END							
+					--			DECLARE @Check_Xml NVARCHAR(MAX)
+					--			DECLARE @Check_Body NVARCHAR(MAX)								
+					--			SET @Check_Xml = CAST((SELECT New_StudentAttendanceId AS ''td'','''', New_StudentsAttendanceId AS ''td'','''', New_Term AS ''td'','''', Is_Invalid_New_Term AS ''td'','''', Record_Deleted AS ''td'' FROM Check_New_StudentAttendanceBase_New_Term
+					--					FOR XML PATH(''tr''), ELEMENTS ) AS NVARCHAR(MAX))									
+					--				SET @Check_Body =''<html><body><H3> '' + @Email_Check_Body + ''</H3>
+					--					<table border = 1> 
+					--					<tr>
+					--					<th> New_StudentAttendanceId </th> <th> New_StudentsAttendancId </th> <th> New_Term </th> <th> Is_Invalid_New_Term </th> <th> Record_Deleted </th> </tr>''    										 
+					--				SET @Check_Body = @Check_Body + @Check_Xml +''</table></body></html>''						
+					--			EXEC msdb.dbo.sp_send_dbmail
+					--				@recipients = ''fams@LDSChurch.org'' 
+					--				, @subject = ''Check New_StudentAttendanceBase New_Term''  -->>>>>> EMAIL SUBJECT <<<<<<<--
+					--				, @body = @Check_Body
+					--				, @body_format = ''HTML''
+					--				, @query = ''SELECT * FROM OneAccord_Warehouse.dbo.Check_New_StudentAttendanceBase_New_Term''
+					--				, @query_result_header=1
+					--				, @query_no_truncate=1
+					--				, @attach_query_result_as_file=1
+					--				, @query_attachment_filename = ''Check_New_StudentAttendanceBase_New_Term.csv''
+					--				, @query_result_separator = ''^''
+					--		END
 
 				SELECT @TABLE_CNT1 = (SELECT CONVERT(NVARCHAR(100),COUNT(*)) FROM Check_New_StudentAttendanceBase_New_Term)  ----->  HARDCODE  <-----
 				EXEC dbo.usp_Insert_Alpha_1 @Alpha_Stage = @CHECK_TABLE_NAME, @Alpha_Step_Number = ''1G'', @Alpha_Step_Name = ''Check Table Update - Count'', @Alpha_Count = @TABLE_CNT1, @Alpha_Result = 1;
